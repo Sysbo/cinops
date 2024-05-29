@@ -1,3 +1,5 @@
+.idea
+
 ## Ignore Directus, Redis and DB files
 .env
 uploads
