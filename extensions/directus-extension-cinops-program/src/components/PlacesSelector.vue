@@ -1,37 +1,42 @@
 <script setup>
-import {ref, onBeforeMount} from 'vue'
+import {ref, defineEmits} from 'vue'
 import {useApi} from '@directus/extensions-sdk'
 
+const emit = defineEmits(['placeSelected'])
 const api = useApi()
 const places = ref([])
-const placeSelected = ref(2)
+const placeSelected = ref(0)
 
-async function getPlaces() {
-  const response = await api.get("/items/place");
-  places.value = response.data.data
+function getPlaces() {
+  api.get("/items/place").then((res) => {
+    places.value = res.data.data
+  });
+}
+function setUserPlace() {
+  api.get("/users/me").then((res) => {
+    placeSelected.value = res.data.data.place_selected
+  }).then(() => {
+    emit('placeSelected', placeSelected.value)
+  });
 }
 
-onBeforeMount(() => {
-  getPlaces()
-})
+function updateSelectedPlace() {
+  api.patch("/users/me", {
+    "place_selected": placeSelected.value
+  })
+}
+
+getPlaces()
+setUserPlace()
 
 </script>
 
 <template>
-  <select v-model="placeSelected" class="">
+  <select @change="$emit('placeSelected', placeSelected); updateSelectedPlace();" v-model="placeSelected" class="">
     <option v-for="place in places" :value="place.id" class="">
       {{ place.title }}
     </option>
   </select>
-  <div>
-    {{ placeSelected }}
-  </div>
-  <v-button
-      class="action-preview"
-      @click="$emit('addMovie')"
-  >
-    Ajouter un film
-  </v-button>
 </template>
 
 <style scoped lang="scss">
