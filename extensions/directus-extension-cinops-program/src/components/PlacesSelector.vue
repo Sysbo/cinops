@@ -8,7 +8,7 @@ const places = ref([])
 const placeSelected = ref(0)
 
 function getPlaces() {
-  api.get("/items/place").then((res) => {
+  api.get("/items/place?fields[]=id,title").then((res) => {
     places.value = res.data.data
   });
 }

@@ -2,12 +2,13 @@
 import {ref} from 'vue'
 import {useApi} from '@directus/extensions-sdk'
 
+const emit = defineEmits(['movieAddedToPlace'])
 const props = defineProps({
   placeSelected: Number
 })
 const api = useApi()
-const movies = ref(null)
-const events = ref(null)
+const movies = ref(Array)
+const events = ref(Array)
 const search = ref(null)
 
 function getLastMovies() {
@@ -28,11 +29,13 @@ function addMovieToPlace(id) {
     "movies": {
       "create": [{ "movie_id": id }],
     }
+  }).then( () => {
+    emit('movieAddedToPlace')
+    getLastMovies()
   })
 }
 
 function isMovieDisable(movie) {
-  console.log(movie)
   return movie.places.find((e) => e.place_id === props.placeSelected)
 }
 
@@ -46,7 +49,7 @@ getLastEvents()
   <h3>Films</h3>
   <div class="draggable-event" v-for="movie in movies">
     <VButton
-        @click="addMovieToPlace(movie.id); $emit('movieAddedToPlace')"
+        @click="addMovieToPlace(movie.id)"
         :rounded="true"
         :icon="true"
         :disabled="isMovieDisable(movie)"

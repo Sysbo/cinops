@@ -14,6 +14,8 @@ import {ref, watch} from "vue";
 const api = useApi()
 const livePreviewMode = ref(false)
 const placeSelected = ref(0)
+const movies = ref(null)
+const events = ref(null)
 const addMovie = ref(false)
 const sessionId = ref(null)
 const sessionDrawerActive = ref(false)
@@ -38,8 +40,7 @@ const calendarOptions = ref(
       nowIndicator: true,
       droppable: true,
       firstDay: 3,
-      //weekNumbers: true,
-      multiMonthMaxColumns: 1,
+      weekNumbers: false,
       editable: true,
       slotDuration: "00:30:00",
       snapDuration: "00:05:00",
@@ -68,7 +69,25 @@ watch(placeSelected, () => {
   if (typeof fullcalendar.value !== 'undefined' && fullcalendar.value !== null) {
     sessionRefetch()
   }
+  getPlaceMovies()
+  getPlaceEvents()
 })
+
+
+function getPlaceMovies() {
+  api.get("/items/movie?filter[places][place_id][_eq]=" +
+      placeSelected.value).then((res) => {
+    movies.value = res.data.data
+  });
+
+}
+
+function getPlaceEvents() {
+  api.get("/items/event?filter[places][place_id][_eq]=" +
+      placeSelected.value).then((res) => {
+    events.value = res.data.data
+  });
+}
 
 function sessionReceive(session) {
   api.post("/items/sessions/", {
@@ -114,7 +133,8 @@ function setEvents(info, successCallback, failureCallback) {
                     title: eventEl.movie.title,
                     start: eventEl.date + " " + eventEl.time,
                     id: eventEl.id,
-                    end: eventEl.duration ? addMinutesToDate(eventEl.date + " " + eventEl.time, eventEl.duration) : addMinutesToDate(eventEl.date + " " + eventEl.time, eventEl.movie.runtime)
+                    end: eventEl.duration ? addMinutesToDate(eventEl.date + " " + eventEl.time, eventEl.duration) : addMinutesToDate(eventEl.date + " " + eventEl.time, eventEl.movie.runtime),
+                    active: eventEl.active
                   };
                 })
         );
@@ -144,7 +164,17 @@ function sessionUpdate(session) {
       })
 }
 
+function sessionVisibility(session) {
+  api.patch("/items/sessions/" + session.event.id, {
+    'active': !session.event.extendedProps.active
+  })
+      .then(() => {
+        sessionRefetch()
+      })
+}
+
 function sessionDelete(session) {
+  console.log(session)
   api.delete("/items/sessions/" + session.event.id)
       .then(() => {
         sessionRefetch()
@@ -170,7 +200,7 @@ function sessionRefetch() {
       >
         Ajouter un film
       </v-button>
-      <PlaceItems v-if="placeSelected" :place-selected="placeSelected"/>
+      <PlaceItems v-if="placeSelected" :movies="movies" :events="events"/>
     </template>
     <template #sidebar>
       <sidebar-detail icon="info" title="Information" close>
@@ -182,20 +212,48 @@ function sessionRefetch() {
 
     <v-drawer @cancel="addMovie=false" :modelValue="addMovie" :persistent="true"
               :title="'Ajouter un film au cinéma'">
-      <AddItemsToPlace @movieAddedToPlace="console.log('MovieAdded')" :place-selected="placeSelected"/>
+      <AddItemsToPlace @movieAddedToPlace="getPlaceMovies(); getPlaceEvents();" :place-selected="placeSelected"/>
     </v-drawer>
 
     <drawer-item v-if="sessionId" @input="sessionUpdate" @update:active="sessionDrawerActive=false"
                  collection="sessions"
                  :active="sessionDrawerActive" :primaryKey="sessionId"/>
     <FullCalendar ref="fullcalendar" v-if="placeSelected && PlaceItems" :options="calendarOptions">
-      <template v-slot:eventContent='arg' >
-        <template v-if="arg.view.type === 'timeGridWeek'">
-          <b>{{ arg.event.title }}</b><br>
-          <button @click="sessionEdit(arg)">Active</button><br>
-          <button @click="sessionEdit(arg)">Edit</button>
+      <template v-slot:eventContent='arg'>
+        <template v-if="arg.view.type === 'timeGridWeek' || arg.view.type === 'timeGridDay'">
+          <div><span v-if="arg.event.start">{{ arg.event.start.getHours() }}:{{ (arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes() }}</span> <span v-if="arg.event.end"> - {{ arg.event.end.getHours() }}:{{ (arg.event.end.getMinutes() < 10 ? '0' : '') + arg.event.end.getMinutes() }}</span></div>
+          <div><b @click="sessionEdit(arg)">{{ arg.event.title }}</b><br></div>
+          <button @click="sessionVisibility(arg)">
+            <v-icon v-if="arg.event.extendedProps.active" name="visibility"/>
+            <v-icon v-else name="visibility_off"/>
+          </button>
           <br>
-          <button @click="sessionDelete(arg)">Delete</button>
+          <button @click="sessionEdit(arg)">
+            <v-icon name="edit"/>
+          </button>
+          <br>
+          <button @click="sessionDelete(arg)">
+            <v-icon name="delete_forever"/>
+          </button>
+        </template>
+        <template v-else-if="arg.view.type === 'listWeek'">
+          <button @click="sessionVisibility(arg)">
+            <v-icon v-if="arg.event.extendedProps.active" name="visibility"/>
+            <v-icon v-else name="visibility_off"/>
+          </button>
+          <button @click="sessionEdit(arg)">
+            <v-icon name="edit"/>
+          </button>
+          <button @click="sessionDelete(arg)">
+            <v-icon name="delete_forever"/>
+          </button>
+          <b>{{ arg.event.title }}</b>
+        </template>
+        <template v-else-if="arg.view.type === 'dayGridMonth'">
+          <span v-if="arg.event.start">{{ arg.event.start.getHours() }}:{{ (arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes() }}</span> <b @click="sessionEdit(arg)">{{ arg.event.title }}</b>
+        </template>
+        <template v-else>
+          <b @click="sessionEdit(arg)">{{ arg.event.title }}</b>
         </template>
       </template>
     </FullCalendar>
