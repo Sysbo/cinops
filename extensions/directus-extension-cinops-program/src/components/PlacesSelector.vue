@@ -1,6 +1,10 @@
 <script setup>
 import {ref, defineEmits} from 'vue'
 import {useApi} from '@directus/extensions-sdk'
+import { useCinopsStore } from '../stores/cinops';
+
+
+const cinopsStore = useCinopsStore()
 
 const emit = defineEmits(['placeSelected'])
 const api = useApi()
@@ -8,7 +12,7 @@ const places = ref([])
 const placeSelected = ref(0)
 
 function getPlaces() {
-  api.get("/items/place?fields[]=id,title").then((res) => {
+  api.get("/items/places?fields[]=id,name").then((res) => {
     places.value = res.data.data
   });
 }
@@ -21,9 +25,7 @@ function setUserPlace() {
 }
 
 function updateSelectedPlace() {
-  api.patch("/users/me", {
-    "place_selected": placeSelected.value
-  })
+  cinopsStore.selectedPlace = placeSelected.value
 }
 
 getPlaces()
@@ -32,13 +34,19 @@ setUserPlace()
 </script>
 
 <template>
-  <select @change="$emit('placeSelected', placeSelected); updateSelectedPlace();" v-model="placeSelected" class="">
+  <select @change="updateSelectedPlace();" v-model="placeSelected" class="place-selector">
     <option v-for="place in places" :value="place.id" class="">
-      {{ place.title }}
+      {{ place.name }}
     </option>
   </select>
 </template>
 
 <style scoped lang="scss">
-
+.place-selector {
+  width: 100%;
+  padding: 0.5rem;
+  border: unset;
+  margin-bottom: 0.3rem;
+  font-weight: 700;
+}
 </style>
