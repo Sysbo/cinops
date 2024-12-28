@@ -5,10 +5,13 @@ import {useApi} from "@directus/extensions-sdk";
 export const useCinopsStore = defineStore('cinops', () => {
     const api = useApi()
     const selectedPlace = ref(0)
-    const movies = ref(null)
-    const events = ref(null)
+    const defaultPlace = ref(0)
+    const place = ref(null);
+    //const movies = ref(null)
+    //const events = ref(null)
+    const items = ref(null)
 
-    function getMovies() {
+    /*function getMovies() {
         api.get("/items/movies?filter[places][places_id][_eq]=" +
             selectedPlace.value).then((res) => {
             movies.value = res.data.data
@@ -20,7 +23,7 @@ export const useCinopsStore = defineStore('cinops', () => {
             selectedPlace.value).then((res) => {
             events.value = res.data.data
         });
-    }
+    }*/
 
     function setUserSelectedPlace() {
         api.patch("/users/me", {
@@ -28,12 +31,24 @@ export const useCinopsStore = defineStore('cinops', () => {
         })
     }
 
+    function getPlace() {
+        api.get("/items/places/" + selectedPlace.value + "?fields[]=*.*,items.*,items.item.*").then((res) => {
+            place.value = res.data.data
+        });
+    }
+
+    function getDefaultPlaceId() {
+        api.get("/items/places?fields[]=id").then((res) => {
+            selectedPlace.value = res.data.data[0].id
+        });
+    }
+
 
     watch(selectedPlace, () => {
-        getMovies()
-        getEvents()
+        getPlace()
         setUserSelectedPlace()
     })
+    getDefaultPlaceId()
 
-    return {selectedPlace, movies, events}
+    return {selectedPlace, place, defaultPlace, getPlace}
 })

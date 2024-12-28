@@ -6,7 +6,6 @@ import { useCinopsStore } from '../stores/cinops';
 
 const cinopsStore = useCinopsStore()
 
-const emit = defineEmits(['placeSelected'])
 const api = useApi()
 const places = ref([])
 const placeSelected = ref(0)
@@ -20,7 +19,7 @@ function setUserPlace() {
   api.get("/users/me").then((res) => {
     placeSelected.value = res.data.data.place_selected
   }).then(() => {
-    emit('placeSelected', placeSelected.value)
+    cinopsStore.selectedPlace = placeSelected.value
   });
 }
 

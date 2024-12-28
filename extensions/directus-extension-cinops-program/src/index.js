@@ -1,5 +1,6 @@
 import Cinops from './cinops.vue';
 
+
 export default {
 	id: 'cinops-program',
 	name: 'Programmation',
@@ -7,6 +8,12 @@ export default {
 	routes: [
 		{
 			path: '',
+			component: Cinops,
+		},
+		{
+			name: 'theater',
+			path: ':theater',
+			props: true,
 			component: Cinops,
 		},
 	],

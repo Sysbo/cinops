@@ -6,6 +6,8 @@ import {Draggable} from "@fullcalendar/interaction";
 import { useCinopsStore } from '../stores/cinops';
 const cinopsStore = useCinopsStore()
 
+const api = useApi()
+
 function setDraggableEvents() {
   let containerEl = document.getElementById("draggables");
 
@@ -16,10 +18,16 @@ function setDraggableEvents() {
 
 function eventData(item, type) {
   return JSON.stringify({
-    'title': item.title,
-    'element_id': item.id,
-    'type': type,
-    'duration': item.runtime ? new Date(item.runtime * 60 * 1000).toISOString().substring(11, 19) : null
+    'title': item.item.title,
+    'element_id': item.item.id,
+    'type': item.collection,
+    'duration': item.item.runtime ? new Date(item.item.runtime * 60 * 1000).toISOString().substring(11, 19) : null
+  })
+}
+
+function setItemColor(e, item) {
+  api.patch("/items/places_items/" + item.id, {
+    'color': e.target.value
   })
 }
 
@@ -31,42 +39,37 @@ onMounted(() => {
 
 <template>
   <div id="draggables" class="place-items">
-    <h3>Films</h3>
-    <div class="draggable-item eitem" :data-event="eventData(movie, 'movies')" v-for="movie in cinopsStore.movies">
+    <div class="draggable-item eitem" :data-event="eventData(item)" v-for="item in cinopsStore.place.items">
       <div class="eitem__wrapper">
         <div class="eitem__color">
           <div class="eitem__color__inner">
-            <input type="color" name="eitem-color">
+            <input @change="e => setItemColor(e,item)" type="color" v-model="item.color" name="eitem-color">
           </div>
         </div>
         <div class="eitem__detail">
           <div class="eitem__title">
-            {{ movie.title }}
+            {{ item.item.title }}
+            <div class="eitem__info">
+              <span class="pills"><VIcon :small="true" name="timer"/> {{item.item.runtime}} min.</span>
+              <span class="pills"><VIcon :small="true" name="event"/> 2</span>
+            </div>
           </div>
-          <div class="eitem__info">
+          <div class="eitem__actions">
+            <button>
+              <VIcon :small="true" name="visibility_off"/>
+            </button>
+            <button>
+              <VIcon :small="true" name="table"/>
+            </button>
+            <button>
+              <VIcon :small="true" name="edit"/>
+            </button>
+            <button>
+              <VIcon :small="true" name="delete"/>
+            </button>
           </div>
         </div>
       </div>
-      <div class="eitem__actions">
-        <span class="pills"><VIcon :small="true" name="timer"/> 100 min.</span>
-        <span class="pills"><VIcon :small="true" name="event"/> 2</span>
-        <button>
-          <VIcon :small="true" name="visibility_off"/>
-        </button>
-        <button>
-          <VIcon :small="true" name="table"/>
-        </button>
-        <button>
-          <VIcon :small="true" name="edit"/>
-        </button>
-        <button>
-          <VIcon :small="true" name="delete"/>
-        </button>
-      </div>
-    </div>
-    <h3>Événements</h3>
-    <div class="draggable-item eitem" :data-event="eventData(event, 'events')" v-for="event in cinopsStore.events">
-      {{ event.title }}
     </div>
   </div>
 </template>
@@ -80,12 +83,16 @@ h3 {
 
 .eitem {
   background-color: #fff;
-  border-bottom: 3px solid #f0f4f9;
+  border-top: 2px solid #f0f4f9;
+  border-right: 2px solid #f0f4f9;
+  //border-bottom: 5px solid #f0f4f9;
+  //margin: 0 0.5rem;
 }
 
 .eitem__wrapper {
   display: flex;
-  align-items: center;
+  justify-content: stretch;
+  //align-items: center;
 }
 
 .eitem__detail {
@@ -105,13 +112,13 @@ h3 {
 }
 
 .eitem__color {
-  padding: 0.5rem;
+  //padding: 0.5rem;
 }
 
 .eitem__color__inner {
-  height: 1rem;
-  width: 1rem;
-  border-radius: 50%;
+  height: 100%;
+  width: 0.6rem;
+  //border-radius: 50%;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -120,8 +127,8 @@ h3 {
 }
 
 .eitem__color input {
-  height: 1.7rem;
-  width: 1.5rem;
+  height: 120%;
+  width: 1rem;
   border: unset;
   padding: 0;
   margin: 0;

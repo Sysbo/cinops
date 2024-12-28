@@ -9,12 +9,15 @@ import {useApi} from "@directus/extensions-sdk";
 import PlacesSelector from "./components/PlacesSelector.vue";
 import PlaceItems from "./components/PlaceItems.vue";
 import AddItemsToPlace from "./components/AddItemsToPlace.vue";
-import {ref, watch} from "vue";
+import {ref, watch, watchEffect} from "vue";
 import {useCinopsStore} from './stores/cinops';
 import {storeToRefs} from 'pinia'
+import isDarkColor from 'is-dark-color'
+import Navigation from './components/Navigation.vue'
 
 const cinopsStore = useCinopsStore()
-const {selectedPlace} = storeToRefs(cinopsStore)
+const {place} = storeToRefs(cinopsStore)
+const {defaultPlace} = storeToRefs(cinopsStore)
 
 const api = useApi()
 const livePreviewMode = ref(false)
@@ -22,7 +25,6 @@ const addMovie = ref(false)
 const sessionId = ref(null)
 const sessionDrawerActive = ref(false)
 const fullcalendar = ref(null)
-const calendarApi = ref(null)
 const calendarOptions = ref(
     {
       plugins: [
@@ -66,7 +68,20 @@ const calendarOptions = ref(
     }
 )
 
-watch(selectedPlace, () => {
+// Get Cinema ID from URL
+const props = defineProps({
+  theater: {
+    type: Number,
+    default: null
+  }
+})
+
+// Watch Theater ID change from URL and change selectedPlace in Cinops store
+watchEffect(() => {
+    cinopsStore.selectedPlace = props.theater || cinopsStore.selectedPlace || cinopsStore.defaultPlace.id
+})
+
+watch(place, () => {
   if (typeof fullcalendar.value !== 'undefined' && fullcalendar.value !== null) {
     sessionRefetch()
   }
@@ -76,7 +91,7 @@ function sessionReceive(session) {
   api.post("/items/sessions/", {
     //"movie_id": {"id": session.event.extendedProps.movie_id},
     "date": session.event.start.toISOString().slice(0, 10),
-    "place_id": {"id": selectedPlace.value},
+    "place_id": {"id": place.value.id},
     "time": session.event.start.getHours() + ":" + session.event.start.getMinutes() + ":" + session.event.start.getSeconds(),
     "items": {
       "create": [{
@@ -88,6 +103,7 @@ function sessionReceive(session) {
   }).then(() => {
     session.event.remove()
   }).then(() => {
+    cinopsStore.getPlace()
     sessionRefetch()
   })
 }
@@ -103,11 +119,16 @@ function addMinutesToDate(date, n) {
   return d;
 }
 
+function findSessionColor(session) {
+  const item = cinopsStore.place.items.find((e) => e.item.id === session.items[0].item.id)
+  return item ? item.color : "#efefef";
+}
+
 function setEvents(info, successCallback, failureCallback) {
   api
       .get(
           "/items/sessions?filter[place_id][_eq]=" +
-          selectedPlace.value +
+          place.value.id +
           "&fields[]=*.*,items.*,items.item.*&filter[date][_between]=" + info.start.toISOString().slice(0, 10) + "," + info.end.toISOString().slice(0, 10)
       )
       .then((res) => {
@@ -118,8 +139,13 @@ function setEvents(info, successCallback, failureCallback) {
                     res.data.data
                 )
                 .map(function (eventEl) {
+                  const color = findSessionColor(eventEl)
                   return {
+                    display: "block",
                     title: eventEl.items[0] ? eventEl.items[0].item.title : null,
+                    backgroundColor: (eventEl.active) ? color : "#efefef",
+                    borderColor: color,
+                    textColor: isDarkColor(color) ? "white" : "dark",
                     start: eventEl.date + " " + eventEl.time,
                     id: eventEl.id,
                     type: eventEl.items[0] ? eventEl.items[0].collection : null,
@@ -137,7 +163,6 @@ function diff_minutes(dateStart, dateEnd) {
 }
 
 function sessionChange(session) {
-  console.log(session)
   api.patch("/items/sessions/" + session.event.id, {
     "date": session.event.start.toISOString().slice(0, 10),
     "time": session.event.start.getHours() + ":" + session.event.start.getMinutes() + ":" + session.event.start.getSeconds(),
@@ -164,7 +189,9 @@ function sessionVisibility(session) {
 }
 
 function sessionDelete(session) {
-  console.log(session)
+  if (confirm("Valider la suppression de la séance ?") === false) {
+    return
+  }
   api.delete("/items/sessions/" + session.event.id)
       .then(() => {
         sessionRefetch()
@@ -180,20 +207,14 @@ function sessionRefetch() {
 </script>
 
 <template>
-  <private-view :splitView="livePreviewMode" title="Programmation">
+  <private-view :splitView="livePreviewMode" v-if="place" :title="place.name">
     <!--<template #title-outer:prepend> test </template>-->
+    <template #headline>
+      Programmation
+    </template>
     <template #navigation>
-      <PlacesSelector/>
-      <v-button
-          class="action-preview"
-          @click="addMovie=true"
-          :xSmall="true"
-          :tile="true"
-          :fullWidth="true"
-      >
-        Ajouter un élément
-      </v-button>
-      <PlaceItems/>
+      {{ cinema }}
+      <Navigation :current="cinopsStore.selectedPlace"/>
     </template>
     <template #sidebar>
       <sidebar-detail icon="info" title="Information" close>
@@ -205,61 +226,109 @@ function sessionRefetch() {
 
     <v-drawer @cancel="addMovie=false" :modelValue="addMovie" :persistent="true"
               :title="'Ajouter un film au cinéma'">
-      <AddItemsToPlace @movieAddedToPlace="" />
+      <AddItemsToPlace/>
     </v-drawer>
 
     <drawer-item v-if="sessionId" @input="sessionUpdate" @update:active="sessionDrawerActive=false"
                  collection="sessions"
                  :active="sessionDrawerActive" :primaryKey="sessionId"/>
-    <FullCalendar ref="fullcalendar" :options="calendarOptions">
-      <template v-slot:eventContent='arg'>
-        <template v-if="arg.view.type === 'timeGridWeek' || arg.view.type === 'timeGridDay'">
-          <div><span v-if="arg.event.start">{{
-              arg.event.start.getHours()
-            }}:{{ (arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes() }}</span> <span
-              v-if="arg.event.end"> - {{
-              arg.event.end.getHours()
-            }}:{{ (arg.event.end.getMinutes() < 10 ? '0' : '') + arg.event.end.getMinutes() }}</span></div>
-          <div><b @click="sessionEdit(arg)">{{ arg.event.title }}</b><br></div>
-          <button @click="sessionVisibility(arg)">
-            <v-icon v-if="arg.event.extendedProps.active" name="visibility"/>
-            <v-icon v-else name="visibility_off"/>
-          </button>
-          <br>
-          <button @click="sessionEdit(arg)">
-            <v-icon name="edit"/>
-          </button>
-          <br>
-          <button @click="sessionDelete(arg)">
-            <v-icon name="delete_forever"/>
-          </button>
-        </template>
-        <template v-else-if="arg.view.type === 'listWeek'">
-          <button @click="sessionVisibility(arg)">
-            <v-icon v-if="arg.event.extendedProps.active" name="visibility"/>
-            <v-icon v-else name="visibility_off"/>
-          </button>
-          <button @click="sessionEdit(arg)">
-            <v-icon name="edit"/>
-          </button>
-          <button @click="sessionDelete(arg)">
-            <v-icon name="delete_forever"/>
-          </button>
-          <b>{{ arg.event.title }}</b>
-        </template>
-        <template v-else-if="arg.view.type === 'dayGridMonth'">
+
+
+    <div class="prog">
+      <div class="prog__left">
+        <!--<v-button
+              class="action-preview"
+              @click="addMovie=true"
+              :xSmall="true"
+              :tile="true"
+              :fullWidth="true"
+          >
+            Ajouter un élément
+          </v-button>-->
+        <PlaceItems v-if="place"/>
+      </div>
+      <div class="prog__right">
+        <FullCalendar ref="fullcalendar" :options="calendarOptions">
+          <template v-slot:eventContent='arg'>
+            <template v-if="arg.view.type === 'timeGridWeek' || arg.view.type === 'timeGridDay'">
+              <div><span v-if="arg.event.start">{{
+                  arg.event.start.getHours()
+                }}:{{ (arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes() }}</span> <span
+                  v-if="arg.event.end"> - {{
+                  arg.event.end.getHours()
+                }}:{{ (arg.event.end.getMinutes() < 10 ? '0' : '') + arg.event.end.getMinutes() }}</span></div>
+              <div><b @click="sessionEdit(arg)">{{ arg.event.title }}</b><br></div>
+              <button @click="sessionVisibility(arg)">
+                <v-icon v-if="arg.event.extendedProps.active" name="visibility"/>
+                <v-icon v-else name="visibility_off"/>
+              </button>
+              <br>
+              <button @click="sessionEdit(arg)">
+                <v-icon name="edit"/>
+              </button>
+              <br>
+              <button @click="sessionDelete(arg)">
+                <v-icon name="delete_forever"/>
+              </button>
+            </template>
+            <template v-else-if="arg.view.type === 'listWeek'">
+              <button @click="sessionVisibility(arg)">
+                <v-icon v-if="arg.event.extendedProps.active" name="visibility"/>
+                <v-icon v-else name="visibility_off"/>
+              </button>
+              <button @click="sessionEdit(arg)">
+                <v-icon name="edit"/>
+              </button>
+              <button @click="sessionDelete(arg)">
+                <v-icon name="delete_forever"/>
+              </button>
+              <b>{{ arg.event.title }}</b>
+            </template>
+            <template v-else-if="arg.view.type === 'dayGridMonth'">
           <span v-if="arg.event.start">{{
               arg.event.start.getHours()
             }}:{{ (arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes() }}</span> <b
-            @click="sessionEdit(arg)">{{ arg.event.title }}</b>
-        </template>
-        <template v-else>
-          <b @click="sessionEdit(arg)">{{ arg.event.title }}</b>
-        </template>
-      </template>
-    </FullCalendar>
+                @click="sessionEdit(arg)">{{ arg.event.title }}</b>
+            </template>
+            <template v-else>
+              <b @click="sessionEdit(arg)">{{ arg.event.title }}</b>
+            </template>
+          </template>
+        </FullCalendar>
+      </div>
+    </div>
+
   </private-view>
 </template>
 
 <style lang="scss" scoped>
+
+.resize-wrapper {
+  display: none !important;
+}
+
+.fc-event-main {
+  overflow: hidden;
+}
+
+.prog {
+  display: flex;
+  //flex-flow: row wrap;
+}
+
+.prog * {
+  box-sizing: border-box;
+}
+
+.prog__left {
+  background-color: #f0f4f9;
+  margin: 0 1rem;
+  width: 15rem;
+  min-width: 15rem;
+}
+
+.prog__right {
+  //flex: 1 1 100%;
+}
+
 </style>

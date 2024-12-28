@@ -1,17 +1,16 @@
 <script setup>
 import {ref, watch} from 'vue'
 import {useApi} from '@directus/extensions-sdk'
+import {useCinopsStore} from '../stores/cinops';
+import uniqolor from 'uniqolor';
 
-const emit = defineEmits(['movieAddedToPlace'])
-const props = defineProps({
-  placeSelected: Number
-})
+const cinopsStore = useCinopsStore()
 const api = useApi()
 const movies = ref(Array)
 const events = ref(Array)
 const search = ref(null)
-const searchMovies= ref(Array)
-const searchEvents= ref(Array)
+const searchMovies = ref(Array)
+const searchEvents = ref(Array)
 const tab = ref("movie")
 
 watch(search, () => {
@@ -31,27 +30,22 @@ function getLastEvents() {
   });
 }
 
-function addMovieToPlace(id) {
-  api.patch("/items/movies/" + id, {
-    "places": {
-      "create": [{"places_id": props.placeSelected}],
+function addItemToPlace(item, type) {
+  api.patch("/items/places/" + cinopsStore.place.id, {
+    "items": {
+      "create": [{
+        "item": {
+          "id": item.id
+        },
+        "collection": type,
+        "color": uniqolor.random().color
+      }],
     }
   }).then(() => {
-    emit('movieAddedToPlace')
     getLastMovies()
-    searchFor(search)
-  })
-}
-
-function addEventToPlace(id) {
-  api.patch("/items/events/" + id, {
-    "places": {
-      "create": [{"places_id": props.placeSelected}],
-    }
-  }).then(() => {
-    emit('movieAddedToPlace')
     getLastEvents()
     searchFor(search)
+    cinopsStore.getPlace()
   })
 }
 
@@ -67,13 +61,10 @@ function searchFor(search) {
   });
 }
 
-function isMovieDisable(movie) {
-  return movie.places.find((e) => e.places_id === props.placeSelected)
+function isItemDisable(item) {
+  return cinopsStore.place.items.find((e) => e.item.id === item.id)
 }
 
-function isEventDisable(event) {
-  return event.places.find((e) => e.places_id === props.placeSelected)
-}
 
 getLastMovies()
 getLastEvents()
@@ -88,13 +79,13 @@ getLastEvents()
         <h3>Films</h3>
         <div v-for="movie in searchMovies">
           <VButton
-              @click="addMovieToPlace(movie.id)"
+              @click="addItemToPlace(movie, 'movies')"
               :rounded="true"
               :icon="true"
-              :disabled="isMovieDisable(movie)"
+              :disabled="isItemDisable(movie)"
           >
-            <VIcon v-if="isMovieDisable(movie)" name="check"/>
-            <VIcon v-if="!isMovieDisable(movie)" name="add"/>
+            <VIcon v-if="isItemDisable(movie)" name="check"/>
+            <VIcon v-if="!isItemDisable(movie)" name="add"/>
           </VButton>
           {{ movie.title }}
         </div>
@@ -104,13 +95,13 @@ getLastEvents()
         <h3>Evénements</h3>
         <div v-for="event in searchEvents">
           <VButton
-              @click="addEventToPlace(event.id)"
+              @click="addItemToPlace(event, 'events')"
               :rounded="true"
               :icon="true"
-              :disabled="isMovieDisable(event)"
+              :disabled="isItemDisable(event)"
           >
-            <VIcon v-if="isEventDisable(event)" name="check"/>
-            <VIcon v-if="!isEventDisable(event)" name="add"/>
+            <VIcon v-if="isItemDisable(event)" name="check"/>
+            <VIcon v-if="!isItemDisable(event)" name="add"/>
           </VButton>
           {{ event.title }}
         </div>
@@ -129,13 +120,13 @@ getLastEvents()
     <h3>Films</h3>
     <div v-for="movie in movies">
       <VButton
-          @click="addMovieToPlace(movie.id)"
+          @click="addItemToPlace(movie, 'movies')"
           :rounded="true"
           :icon="true"
-          :disabled="isMovieDisable(movie)"
+          :disabled="isItemDisable(movie)"
       >
-        <VIcon v-if="isMovieDisable(movie)" name="check"/>
-        <VIcon v-if="!isMovieDisable(movie)" name="add"/>
+        <VIcon v-if="isItemDisable(movie)" name="check"/>
+        <VIcon v-if="!isItemDisable(movie)" name="add"/>
       </VButton>
       {{ movie.title }}
     </div>
@@ -144,13 +135,13 @@ getLastEvents()
     <h3>Événements</h3>
     <div v-for="event in events">
       <VButton
-          @click="addEventToPlace(event.id)"
+          @click="addItemToPlace(event, 'events')"
           :rounded="true"
           :icon="true"
-          :disabled="isMovieDisable(event)"
+          :disabled="isItemDisable(event)"
       >
-        <VIcon v-if="isEventDisable(event)" name="check"/>
-        <VIcon v-if="!isEventDisable(event)" name="add"/>
+        <VIcon v-if="isItemDisable(event)" name="check"/>
+        <VIcon v-if="!isItemDisable(event)" name="add"/>
       </VButton>
       {{ event.title }}
     </div>
