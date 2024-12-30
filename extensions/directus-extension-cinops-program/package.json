@@ -34,6 +34,7 @@
 		"@fullcalendar/vue3": "^6.1.13",
 		"is-dark-color": "^1.2.0",
 		"node-sass": "^9.0.0",
+		"papaparse": "^5.4.1",
 		"pinia": "^2.2.2",
 		"uniqolor": "^1.1.1"
 	}

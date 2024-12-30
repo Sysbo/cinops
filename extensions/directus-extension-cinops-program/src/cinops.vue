@@ -14,6 +14,7 @@ import {useCinopsStore} from './stores/cinops';
 import {storeToRefs} from 'pinia'
 import isDarkColor from 'is-dark-color'
 import Navigation from './components/Navigation.vue'
+import ImportMaccsbox from "./components/ImportMaccsbox.vue";
 
 const cinopsStore = useCinopsStore()
 const {place} = storeToRefs(cinopsStore)
@@ -21,6 +22,7 @@ const {place} = storeToRefs(cinopsStore)
 const api = useApi()
 const livePreviewMode = ref(false)
 const addMovie = ref(false)
+const importMovies = ref(false)
 const sessionId = ref(null)
 const sessionDrawerActive = ref(false)
 const fullcalendar = ref(null)
@@ -77,7 +79,7 @@ const props = defineProps({
 
 // Watch Theater ID change from URL and change selectedPlace in Cinops store
 watchEffect(() => {
-  if(props.theater) {
+  if (props.theater) {
     cinopsStore.selectedPlace = props.theater
   }
 })
@@ -237,7 +239,14 @@ function sessionRefetch() {
     <template #sidebar>
       <sidebar-detail icon="info" title="Information" close>
         <div class="page-description">
-          Description de la page programmation
+          Programmation du cinéma : {{ place.name }}
+        </div>
+      </sidebar-detail>
+      <sidebar-detail icon="upload" title="Import Maccsbox" open>
+        <div class="page-description">
+          <VButton @click="importMovies=true" small>
+            Importer films Maccsbox
+          </VButton>
         </div>
       </sidebar-detail>
     </template>
@@ -245,6 +254,11 @@ function sessionRefetch() {
     <v-drawer @cancel="addMovie=false" :modelValue="addMovie" :persistent="true"
               :title="'Ajouter un film au cinéma'">
       <AddItemsToPlace/>
+    </v-drawer>
+
+    <v-drawer @cancel="importMovies=false" :modelValue="importMovies" :persistent="true"
+              :title="'Importer des films Maccsbox'">
+      <ImportMaccsbox/>
     </v-drawer>
 
     <drawer-item v-if="sessionId" @input="sessionUpdate" @update:active="sessionDrawerActive=false"
@@ -294,7 +308,8 @@ function sessionRefetch() {
                 <v-icon @click="sessionDelete(arg)" small="true" name="delete_forever" color="black"/>
               </div>
 
-              <div class="fc-event-main__status" v-if="arg.event.extendedProps.premiere || arg.event.extendedProps.last || arg.event.extendedProps.single">
+              <div class="fc-event-main__status"
+                   v-if="arg.event.extendedProps.premiere || arg.event.extendedProps.last || arg.event.extendedProps.single">
                 <v-icon v-if="arg.event.extendedProps.premiere" xSmall color="orange" class="event-premiere"
                         name="star"/>
                 <v-icon v-if="arg.event.extendedProps.last" xSmall color="red" class="event-last" name="warning"/>
