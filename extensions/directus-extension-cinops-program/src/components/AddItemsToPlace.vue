@@ -8,10 +8,10 @@ const cinopsStore = useCinopsStore()
 const api = useApi()
 const movies = ref(Array)
 const events = ref(Array)
-const search = ref(null)
+const search = ref("")
 const searchMovies = ref(Array)
 const searchEvents = ref(Array)
-const tab = ref("movie")
+const tab = ref([1])
 
 watch(search, () => {
   searchFor(search)
@@ -82,10 +82,10 @@ getLastEvents()
               @click="addItemToPlace(movie, 'movies')"
               :rounded="true"
               :icon="true"
+              :small="true"
               :disabled="isItemDisable(movie)"
           >
-            <VIcon v-if="isItemDisable(movie)" name="check"/>
-            <VIcon v-if="!isItemDisable(movie)" name="add"/>
+            <VIcon :name="isItemDisable(movie) ? 'check' : 'add'" :small="true"/>
           </VButton>
           {{ movie.title }}
         </div>
@@ -98,10 +98,10 @@ getLastEvents()
               @click="addItemToPlace(event, 'events')"
               :rounded="true"
               :icon="true"
+              :small="true"
               :disabled="isItemDisable(event)"
           >
-            <VIcon v-if="isItemDisable(event)" name="check"/>
-            <VIcon v-if="!isItemDisable(event)" name="add"/>
+            <VIcon :name="isItemDisable(event) ? 'check' : 'add'" :small="true"/>
           </VButton>
           {{ event.title }}
         </div>
@@ -110,44 +110,56 @@ getLastEvents()
     </div>
   </div>
 
+  <div class="last-items" v-if="!search">
+    <VTabs v-model="tab">
+      <VTab>
+        Films
+      </VTab>
+      <VTab>
+        Événements
+      </VTab>
+    </VTabs>
 
-  <ul class="nav-tab">
-    <button @click="tab = 'movie'">Films</button>
-    <button @click="tab = 'event'">Événements</button>
-  </ul>
+    <VTabsItems :model-value="tab">
+      <VTabItem>
+        <div v-for="movie in movies">
+          <VButton
+              @click="addItemToPlace(movie, 'movies')"
+              :rounded="true"
+              :icon="true"
+              :small="true"
+              :disabled="isItemDisable(movie)"
+          >
+            <VIcon :name="isItemDisable(movie) ? 'check' : 'add'" :small="true"/>
+          </VButton>
+          {{ movie.title }}
+        </div>
+      </VTabItem>
+      <VTabItem>
+        <div v-for="event in events">
+          <VButton
+              @click="addItemToPlace(event, 'events')"
+              :rounded="true"
+              :icon="true"
+              :small="true"
+              :disabled="isItemDisable(event)"
+          >
+            <VIcon :name="isItemDisable(event) ? 'check' : 'add'" :small="true"/>
+          </VButton>
+          {{ event.title }}
+        </div>
+      </VTabItem>
+    </VTabsItems>
 
-  <div class="tab-movie" v-if="tab === 'movie'">
-    <h3>Films</h3>
-    <div v-for="movie in movies">
-      <VButton
-          @click="addItemToPlace(movie, 'movies')"
-          :rounded="true"
-          :icon="true"
-          :disabled="isItemDisable(movie)"
-      >
-        <VIcon v-if="isItemDisable(movie)" name="check"/>
-        <VIcon v-if="!isItemDisable(movie)" name="add"/>
-      </VButton>
-      {{ movie.title }}
-    </div>
-  </div>
-  <div class="tab-event" v-if="tab === 'event'">
-    <h3>Événements</h3>
-    <div v-for="event in events">
-      <VButton
-          @click="addItemToPlace(event, 'events')"
-          :rounded="true"
-          :icon="true"
-          :disabled="isItemDisable(event)"
-      >
-        <VIcon v-if="isItemDisable(event)" name="check"/>
-        <VIcon v-if="!isItemDisable(event)" name="add"/>
-      </VButton>
-      {{ event.title }}
-    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.search {
+  padding: 0 2rem 2rem 2rem;
+}
 
+.last-items {
+  padding: 0 2rem 2rem 2rem;
+}
 </style>

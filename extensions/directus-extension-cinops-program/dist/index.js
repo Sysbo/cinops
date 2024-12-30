@@ -1,4 +1,4 @@
-import { defineComponent, h as h$1, Fragment, Teleport, ref, watch, onMounted, resolveComponent, openBlock, createElementBlock, renderList, unref, createElementVNode, withDirectives, vModelText, createTextVNode, toDisplayString, createVNode, withCtx, createBlock, createCommentVNode, watchEffect, pushScopeId, popScopeId } from 'vue';
+import { defineComponent, h as h$1, Fragment, Teleport, ref, watch, onMounted, resolveComponent, openBlock, createElementBlock, createElementVNode, renderList, unref, normalizeClass, withDirectives, vModelText, createVNode, createTextVNode, toDisplayString, createCommentVNode, createBlock, withCtx, pushScopeId, popScopeId, watchEffect, resolveDirective } from 'vue';
 import { useApi } from '@directus/extensions-sdk';
 import { defineStore, storeToRefs } from 'pinia';
 
@@ -14118,31 +14118,7 @@ var l31 = {
 const useCinopsStore = defineStore('cinops', () => {
     const api = useApi();
     const selectedPlace = ref(0);
-    const defaultPlace = ref(0);
     const place = ref(null);
-    //const movies = ref(null)
-    //const events = ref(null)
-    ref(null);
-
-    /*function getMovies() {
-        api.get("/items/movies?filter[places][places_id][_eq]=" +
-            selectedPlace.value).then((res) => {
-            movies.value = res.data.data
-        });
-    }
-
-    function getEvents() {
-        api.get("/items/events?filter[places][places_id][_eq]=" +
-            selectedPlace.value).then((res) => {
-            events.value = res.data.data
-        });
-    }*/
-
-    function setUserSelectedPlace() {
-        api.patch("/users/me", {
-            "place_selected": selectedPlace.value
-        });
-    }
 
     function getPlace() {
         api.get("/items/places/" + selectedPlace.value + "?fields[]=*.*,items.*,items.item.*").then((res) => {
@@ -14150,7 +14126,7 @@ const useCinopsStore = defineStore('cinops', () => {
         });
     }
 
-    function getDefaultPlaceId() {
+    function setDefaultPlaceId() {
         api.get("/items/places?fields[]=id").then((res) => {
             selectedPlace.value = res.data.data[0].id;
         });
@@ -14159,17 +14135,17 @@ const useCinopsStore = defineStore('cinops', () => {
 
     watch(selectedPlace, () => {
         getPlace();
-        setUserSelectedPlace();
+        //setUserSelectedPlace()
     });
-    getDefaultPlaceId();
+    setDefaultPlaceId();
 
-    return {selectedPlace, place, defaultPlace, getPlace}
+    return {selectedPlace, place, getPlace}
 });
 
 var e=[],t=[];function n(n,r){if(n&&"undefined"!=typeof document){var a,s=!0===r.prepend?"prepend":"append",d=!0===r.singleTag,i="string"==typeof r.container?document.querySelector(r.container):document.getElementsByTagName("head")[0];if(d){var u=e.indexOf(i);-1===u&&(u=e.push(i)-1,t[u]={}),a=t[u]&&t[u][s]?t[u][s]:t[u][s]=c();}else a=c();65279===n.charCodeAt(0)&&(n=n.substring(1)),a.styleSheet?a.styleSheet.cssText+=n:a.appendChild(document.createTextNode(n));}function c(){var e=document.createElement("style");if(e.setAttribute("type","text/css"),r.attributes)for(var t=Object.keys(r.attributes),n=0;n<t.length;n++)e.setAttribute(t[n],r.attributes[t[n]]);var a="prepend"===s?"afterbegin":"beforeend";return i.insertAdjacentElement(a,e),e}}
 
-var css$2 = ".place-selector[data-v-4b72cad2] {\n  width: 100%;\n  padding: 0.5rem;\n  border: unset;\n  margin-bottom: 0.3rem;\n  font-weight: 700; }\n";
-n(css$2,{});
+var css$4 = ".place-selector[data-v-4b72cad2] {\n  width: 100%;\n  padding: 0.5rem;\n  border: unset;\n  margin-bottom: 0.3rem;\n  font-weight: 700; }\n";
+n(css$4,{});
 
 var _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
@@ -14179,8 +14155,8 @@ var _export_sfc = (sfc, props) => {
   return target;
 };
 
-var css$1 = "h3[data-v-31d07e8f] {\n  text-align: center;\n  font-size: 0.8em;\n  font-weight: 700; }\n\n.eitem[data-v-31d07e8f] {\n  background-color: #fff;\n  border-top: 2px solid #f0f4f9;\n  border-right: 2px solid #f0f4f9; }\n\n.eitem__wrapper[data-v-31d07e8f] {\n  display: flex;\n  justify-content: stretch; }\n\n.eitem__detail[data-v-31d07e8f] {\n  flex: 1;\n  padding: 0 0 0.2rem 0; }\n\n.eitem__actions[data-v-31d07e8f] {\n  flex: 0 0 auto;\n  display: flex;\n  justify-content: end;\n  border-top: 1px solid #f0f4f9; }\n  .eitem__actions[data-v-31d07e8f] button[data-v-31d07e8f] {\n    border-left: 1px solid #f0f4f9; }\n\n.eitem__color__inner[data-v-31d07e8f] {\n  height: 100%;\n  width: 0.6rem;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 auto; }\n\n.eitem__color input[data-v-31d07e8f] {\n  height: 120%;\n  width: 1rem;\n  border: unset;\n  padding: 0;\n  margin: 0;\n  flex: 0 0 auto; }\n\n.eitem__info[data-v-31d07e8f] {\n  display: flex;\n  gap: 0.2rem; }\n\n.pills[data-v-31d07e8f] {\n  padding: 0 0.5rem;\n  font-size: .75rem;\n  border-radius: .25rem;\n  margin-right: auto; }\n\n.pills .v-icon[data-v-31d07e8f] {\n  --v-icon-size: 10.5px; }\n";
-n(css$1,{});
+var css$3 = ".place-items[data-v-d728c2be] {\n  display: flex;\n  flex-flow: column; }\n\n.draggable-item.eitem[data-v-d728c2be] {\n  cursor: grab;\n  opacity: 1; }\n\n.eitem[data-v-d728c2be] {\n  border-top: 2px solid var(--theme--border-color-subdued);\n  border-right: 2px solid var(--theme--border-color-subdued);\n  border-left: 2px solid var(--theme--border-color-subdued);\n  opacity: 0.8; }\n\n.eitem__detail[data-v-d728c2be] {\n  width: 100%;\n  padding: 0.5rem 0.5rem 0.5rem 0; }\n\n.eitem__title[data-v-d728c2be] {\n  line-height: normal;\n  color: var(--black);\n  font-size: 0.9rem; }\n\n.eitem__wrapper[data-v-d728c2be] {\n  display: flex; }\n\n.eitem__color[data-v-d728c2be] {\n  display: flex; }\n\n.eitem__visibility[data-v-d728c2be] {\n  display: flex;\n  padding: 0.2rem 0.2rem 0.2rem 0.4rem; }\n\n.eitem__timetable[data-v-d728c2be] {\n  display: flex;\n  padding: 0.2rem; }\n\n.eitem__color__inner[data-v-d728c2be] {\n  height: 100%;\n  width: 0.7rem;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 auto; }\n\n.eitem__color input[data-v-d728c2be] {\n  height: 130%;\n  width: 2rem;\n  border: unset;\n  padding: 0;\n  margin: 0;\n  flex: 0 0 auto;\n  cursor: pointer; }\n\n.eitem__actions[data-v-d728c2be] {\n  display: flex;\n  align-items: start; }\n\n.eitem__actions .v-icon[data-v-d728c2be] {\n  --v-icon-size: 15px; }\n\n.eitem__info[data-v-d728c2be] {\n  display: flex;\n  gap: 0.3rem; }\n\n.pills[data-v-d728c2be] {\n  background-color: var(--theme--border-color-subdued);\n  padding: 0.2rem 0.3rem;\n  font-size: .75rem;\n  border-radius: .25rem; }\n\n.pills .v-icon[data-v-d728c2be] {\n  --v-icon-size: 10.5px; }\n\n/*\n.eitem__detail {\n  flex: 1;\n  padding: 0 0 0.2rem 0;\n}\n\n.eitem__actions {\n  flex: 0 0 auto;\n  display: flex;\n  justify-content: end;\n  border-top: 1px solid #f0f4f9;\n\n  button {\n    border-left: 1px solid #f0f4f9;\n  }\n}\n\n.eitem__color {\n  //padding: 0.5rem;\n}\n\n.eitem__color__inner {\n  height: 100%;\n  width: 0.6rem;\n  //border-radius: 50%;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 auto;\n}\n\n.eitem__color input {\n  height: 120%;\n  width: 1rem;\n  border: unset;\n  padding: 0;\n  margin: 0;\n  flex: 0 0 auto;\n}\n\n.eitem__info {\n  display: flex;\n  gap: 0.2rem;\n}\n\n.pills {\n  //background-color: rgb(243, 244, 246);\n  padding: 0 0.5rem;\n  font-size: .75rem;\n  border-radius: .25rem;\n  margin-right: auto;\n\n}\n\n.pills .v-icon {\n  --v-icon-size: 10.5px;\n}*/\n";
+n(css$3,{});
 
 const _hoisted_1$2 = {
   id: "draggables",
@@ -14191,18 +14167,24 @@ const _hoisted_3$2 = { class: "eitem__wrapper" };
 const _hoisted_4$2 = { class: "eitem__color" };
 const _hoisted_5$2 = { class: "eitem__color__inner" };
 const _hoisted_6$2 = ["onChange", "onUpdate:modelValue"];
-const _hoisted_7$2 = { class: "eitem__detail" };
-const _hoisted_8$2 = { class: "eitem__title" };
-const _hoisted_9$2 = { class: "eitem__info" };
-const _hoisted_10$2 = { class: "pills" };
-const _hoisted_11$2 = { class: "pills" };
-const _hoisted_12$2 = { class: "eitem__actions" };
+const _hoisted_7$2 = { class: "eitem__visibility" };
+const _hoisted_8$2 = { class: "eitem__timetable" };
+const _hoisted_9$2 = { class: "eitem__detail" };
+const _hoisted_10$1 = { class: "eitem__title" };
+const _hoisted_11$1 = { class: "eitem__info" };
+const _hoisted_12$1 = { class: "pills" };
+const _hoisted_13$1 = { class: "eitem__actions" };
+
 
 const _sfc_main$3 = {
   __name: 'PlaceItems',
   setup(__props) {
 
 const cinopsStore = useCinopsStore();
+
+const itemId = ref(null);
+const itemCollection = ref(null);
+const itemDrawerActive = ref(false);
 
 const api = useApi();
 
@@ -14226,7 +14208,50 @@ function eventData(item, type) {
 function setItemColor(e, item) {
   api.patch("/items/places_items/" + item.id, {
     'color': e.target.value
+  }).then(() => {
+    cinopsStore.getPlace();
   });
+}
+
+function itemEdit(item) {
+  itemDrawerActive.value = true;
+  itemId.value = item.item.id;
+  itemCollection.value = item.collection;
+}
+
+function itemUpdate(item) {
+  api.patch("/items/sessions/" + item.id, item)
+      .then(() => {
+        cinopsStore.getPlace();
+      });
+}
+
+function itemVisibility(item) {
+  api.patch("/items/places_items/" + item.id, {
+    'publish': !item.publish
+  })
+      .then(() => {
+        cinopsStore.getPlace();
+      });
+}
+
+function itemTimetable(item) {
+  api.patch("/items/places_items/" + item.id, {
+    'timetable': !item.timetable
+  })
+      .then(() => {
+        cinopsStore.getPlace();
+      });
+}
+
+function itemDelete(item) {
+  if (confirm("Retirer le film du cinéma ?") === false) {
+    return
+  }
+  api.delete("/items/places_items/" + item.id)
+      .then(() => {
+        cinopsStore.getPlace();
+      });
 }
 
 onMounted(() => {
@@ -14236,82 +14261,99 @@ onMounted(() => {
 
 return (_ctx, _cache) => {
   const _component_VIcon = resolveComponent("VIcon");
+  const _component_drawer_item = resolveComponent("drawer-item");
 
-  return (openBlock(), createElementBlock("div", _hoisted_1$2, [
-    (openBlock(true), createElementBlock(Fragment, null, renderList(unref(cinopsStore).place.items, (item) => {
-      return (openBlock(), createElementBlock("div", {
-        class: "draggable-item eitem",
-        "data-event": eventData(item)
-      }, [
-        createElementVNode("div", _hoisted_3$2, [
-          createElementVNode("div", _hoisted_4$2, [
-            createElementVNode("div", _hoisted_5$2, [
-              withDirectives(createElementVNode("input", {
-                onChange: e => setItemColor(e,item),
-                type: "color",
-                "onUpdate:modelValue": $event => ((item.color) = $event),
-                name: "eitem-color"
-              }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_6$2), [
-                [vModelText, item.color]
-              ])
-            ])
-          ]),
-          createElementVNode("div", _hoisted_7$2, [
-            createElementVNode("div", _hoisted_8$2, [
-              createTextVNode(toDisplayString(item.item.title) + " ", 1 /* TEXT */),
-              createElementVNode("div", _hoisted_9$2, [
-                createElementVNode("span", _hoisted_10$2, [
-                  createVNode(_component_VIcon, {
-                    small: true,
-                    name: "timer"
-                  }),
-                  createTextVNode(" " + toDisplayString(item.item.runtime) + " min.", 1 /* TEXT */)
-                ]),
-                createElementVNode("span", _hoisted_11$2, [
-                  createVNode(_component_VIcon, {
-                    small: true,
-                    name: "event"
-                  }),
-                  createTextVNode(" 2")
+  return (openBlock(), createElementBlock(Fragment, null, [
+    createElementVNode("div", _hoisted_1$2, [
+      (openBlock(true), createElementBlock(Fragment, null, renderList(unref(cinopsStore).place.items, (item) => {
+        return (openBlock(), createElementBlock("div", {
+          class: normalizeClass(item.item.runtime > 0 ? 'draggable-item eitem' : 'eitem'),
+          "data-event": eventData(item)
+        }, [
+          createElementVNode("div", _hoisted_3$2, [
+            createElementVNode("div", _hoisted_4$2, [
+              createElementVNode("div", _hoisted_5$2, [
+                withDirectives(createElementVNode("input", {
+                  onChange: e => setItemColor(e,item),
+                  type: "color",
+                  "onUpdate:modelValue": $event => ((item.color) = $event),
+                  name: "eitem-color"
+                }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_6$2), [
+                  [vModelText, item.color]
                 ])
               ])
             ]),
-            createElementVNode("div", _hoisted_12$2, [
+            createElementVNode("div", _hoisted_7$2, [
               createElementVNode("button", null, [
                 createVNode(_component_VIcon, {
+                  onClick: $event => (itemVisibility(item)),
                   small: true,
-                  name: "visibility_off"
-                })
-              ]),
+                  name: item.publish ? 'visibility' : 'visibility_off',
+                  color: item.publish ? '#84cc16' : 'inherit' 
+                }, null, 8 /* PROPS */, ["onClick", "name", "color"])
+              ])
+            ]),
+            createElementVNode("div", _hoisted_8$2, [
               createElementVNode("button", null, [
                 createVNode(_component_VIcon, {
+                  onClick: $event => (itemTimetable(item)),
                   small: true,
-                  name: "table"
-                })
-              ]),
+                  name: "table",
+                  color: item.timetable ? '#84cc16' : 'inherit' 
+                }, null, 8 /* PROPS */, ["onClick", "color"])
+              ])
+            ]),
+            createElementVNode("div", _hoisted_9$2, [
+              createElementVNode("div", _hoisted_10$1, [
+                createTextVNode(toDisplayString(item.item.title) + " ", 1 /* TEXT */),
+                createElementVNode("div", _hoisted_11$1, [
+                  createElementVNode("span", _hoisted_12$1, [
+                    createVNode(_component_VIcon, {
+                      small: true,
+                      name: "timer"
+                    }),
+                    createTextVNode(" " + toDisplayString(item.item.runtime) + " min.", 1 /* TEXT */)
+                  ]),
+                  createCommentVNode("<span class=\"pills\"><VIcon :small=\"true\" name=\"event\"/> {{ 2 }}</span>")
+                ])
+              ])
+            ]),
+            createElementVNode("div", _hoisted_13$1, [
               createElementVNode("button", null, [
                 createVNode(_component_VIcon, {
+                  onClick: $event => (itemEdit(item)),
                   small: true,
                   name: "edit"
-                })
+                }, null, 8 /* PROPS */, ["onClick"])
               ]),
               createElementVNode("button", null, [
                 createVNode(_component_VIcon, {
+                  onClick: $event => (itemDelete(item)),
                   small: true,
-                  name: "delete"
-                })
+                  name: "close"
+                }, null, 8 /* PROPS */, ["onClick"])
               ])
             ])
           ])
-        ])
-      ], 8 /* PROPS */, _hoisted_2$2))
-    }), 256 /* UNKEYED_FRAGMENT */))
-  ]))
+        ], 10 /* CLASS, PROPS */, _hoisted_2$2))
+      }), 256 /* UNKEYED_FRAGMENT */))
+    ]),
+    (itemId.value)
+      ? (openBlock(), createBlock(_component_drawer_item, {
+          key: 0,
+          onInput: itemUpdate,
+          "onUpdate:active": _cache[0] || (_cache[0] = $event => (itemDrawerActive.value=false)),
+          collection: itemCollection.value,
+          active: itemDrawerActive.value,
+          primaryKey: itemId.value
+        }, null, 8 /* PROPS */, ["collection", "active", "primaryKey"]))
+      : createCommentVNode("v-if", true)
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
 };
-var PlaceItems = /*#__PURE__*/_export_sfc(_sfc_main$3, [['__scopeId',"data-v-31d07e8f"],['__file',"PlaceItems.vue"]]);
+var PlaceItems = /*#__PURE__*/_export_sfc(_sfc_main$3, [['__scopeId',"data-v-d728c2be"],['__file',"PlaceItems.vue"]]);
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -14691,28 +14733,25 @@ var uniqolor$1 = {exports: {}};
 var uniqolorExports = uniqolor$1.exports;
 var uniqolor = /*@__PURE__*/getDefaultExportFromCjs(uniqolorExports);
 
+var css$2 = ".search[data-v-3979f9e3] {\n  padding: 0 2rem 2rem 2rem; }\n\n.last-items[data-v-3979f9e3] {\n  padding: 0 2rem 2rem 2rem; }\n";
+n(css$2,{});
+
+const _withScopeId$1 = n => (pushScopeId("data-v-3979f9e3"),n=n(),popScopeId(),n);
 const _hoisted_1$1 = { class: "search" };
 const _hoisted_2$1 = {
   key: 0,
   class: "search__results"
 };
 const _hoisted_3$1 = { class: "search__results__movies" };
-const _hoisted_4$1 = /*#__PURE__*/createElementVNode("h3", null, "Films", -1 /* HOISTED */);
+const _hoisted_4$1 = /*#__PURE__*/ _withScopeId$1(() => /*#__PURE__*/createElementVNode("h3", null, "Films", -1 /* HOISTED */));
 const _hoisted_5$1 = { key: 0 };
 const _hoisted_6$1 = { class: "search__results__events" };
-const _hoisted_7$1 = /*#__PURE__*/createElementVNode("h3", null, "Evénements", -1 /* HOISTED */);
+const _hoisted_7$1 = /*#__PURE__*/ _withScopeId$1(() => /*#__PURE__*/createElementVNode("h3", null, "Evénements", -1 /* HOISTED */));
 const _hoisted_8$1 = { key: 0 };
-const _hoisted_9$1 = { class: "nav-tab" };
-const _hoisted_10$1 = {
+const _hoisted_9$1 = {
   key: 0,
-  class: "tab-movie"
+  class: "last-items"
 };
-const _hoisted_11$1 = /*#__PURE__*/createElementVNode("h3", null, "Films", -1 /* HOISTED */);
-const _hoisted_12$1 = {
-  key: 1,
-  class: "tab-event"
-};
-const _hoisted_13$1 = /*#__PURE__*/createElementVNode("h3", null, "Événements", -1 /* HOISTED */);
 
 
 const _sfc_main$2 = {
@@ -14723,10 +14762,10 @@ const cinopsStore = useCinopsStore();
 const api = useApi();
 const movies = ref(Array);
 const events = ref(Array);
-const search = ref(null);
+const search = ref("");
 const searchMovies = ref(Array);
 const searchEvents = ref(Array);
-const tab = ref("movie");
+const tab = ref([1]);
 
 watch(search, () => {
   searchFor(search);
@@ -14789,6 +14828,10 @@ return (_ctx, _cache) => {
   const _component_v_input = resolveComponent("v-input");
   const _component_VIcon = resolveComponent("VIcon");
   const _component_VButton = resolveComponent("VButton");
+  const _component_VTab = resolveComponent("VTab");
+  const _component_VTabs = resolveComponent("VTabs");
+  const _component_VTabItem = resolveComponent("VTabItem");
+  const _component_VTabsItems = resolveComponent("VTabsItems");
 
   return (openBlock(), createElementBlock(Fragment, null, [
     createElementVNode("div", _hoisted_1$1, [
@@ -14807,21 +14850,14 @@ return (_ctx, _cache) => {
                     onClick: $event => (addItemToPlace(movie, 'movies')),
                     rounded: true,
                     icon: true,
+                    small: true,
                     disabled: isItemDisable(movie)
                   }, {
                     default: withCtx(() => [
-                      (isItemDisable(movie))
-                        ? (openBlock(), createBlock(_component_VIcon, {
-                            key: 0,
-                            name: "check"
-                          }))
-                        : createCommentVNode("v-if", true),
-                      (!isItemDisable(movie))
-                        ? (openBlock(), createBlock(_component_VIcon, {
-                            key: 1,
-                            name: "add"
-                          }))
-                        : createCommentVNode("v-if", true)
+                      createVNode(_component_VIcon, {
+                        name: isItemDisable(movie) ? 'check' : 'add',
+                        small: true
+                      }, null, 8 /* PROPS */, ["name"])
                     ]),
                     _: 2 /* DYNAMIC */
                   }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick", "disabled"]),
@@ -14840,21 +14876,14 @@ return (_ctx, _cache) => {
                     onClick: $event => (addItemToPlace(event, 'events')),
                     rounded: true,
                     icon: true,
+                    small: true,
                     disabled: isItemDisable(event)
                   }, {
                     default: withCtx(() => [
-                      (isItemDisable(event))
-                        ? (openBlock(), createBlock(_component_VIcon, {
-                            key: 0,
-                            name: "check"
-                          }))
-                        : createCommentVNode("v-if", true),
-                      (!isItemDisable(event))
-                        ? (openBlock(), createBlock(_component_VIcon, {
-                            key: 1,
-                            name: "add"
-                          }))
-                        : createCommentVNode("v-if", true)
+                      createVNode(_component_VIcon, {
+                        name: isItemDisable(event) ? 'check' : 'add',
+                        small: true
+                      }, null, 8 /* PROPS */, ["name"])
                     ]),
                     _: 2 /* DYNAMIC */
                   }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick", "disabled"]),
@@ -14868,76 +14897,83 @@ return (_ctx, _cache) => {
           ]))
         : createCommentVNode("v-if", true)
     ]),
-    createElementVNode("ul", _hoisted_9$1, [
-      createElementVNode("button", {
-        onClick: _cache[1] || (_cache[1] = $event => (tab.value = 'movie'))
-      }, "Films"),
-      createElementVNode("button", {
-        onClick: _cache[2] || (_cache[2] = $event => (tab.value = 'event'))
-      }, "Événements")
-    ]),
-    (tab.value === 'movie')
-      ? (openBlock(), createElementBlock("div", _hoisted_10$1, [
-          _hoisted_11$1,
-          (openBlock(true), createElementBlock(Fragment, null, renderList(movies.value, (movie) => {
-            return (openBlock(), createElementBlock("div", null, [
-              createVNode(_component_VButton, {
-                onClick: $event => (addItemToPlace(movie, 'movies')),
-                rounded: true,
-                icon: true,
-                disabled: isItemDisable(movie)
-              }, {
+    (!search.value)
+      ? (openBlock(), createElementBlock("div", _hoisted_9$1, [
+          createVNode(_component_VTabs, {
+            modelValue: tab.value,
+            "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((tab).value = $event))
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_VTab, null, {
                 default: withCtx(() => [
-                  (isItemDisable(movie))
-                    ? (openBlock(), createBlock(_component_VIcon, {
-                        key: 0,
-                        name: "check"
-                      }))
-                    : createCommentVNode("v-if", true),
-                  (!isItemDisable(movie))
-                    ? (openBlock(), createBlock(_component_VIcon, {
-                        key: 1,
-                        name: "add"
-                      }))
-                    : createCommentVNode("v-if", true)
+                  createTextVNode(" Films ")
                 ]),
-                _: 2 /* DYNAMIC */
-              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick", "disabled"]),
-              createTextVNode(" " + toDisplayString(movie.title), 1 /* TEXT */)
-            ]))
-          }), 256 /* UNKEYED_FRAGMENT */))
-        ]))
-      : createCommentVNode("v-if", true),
-    (tab.value === 'event')
-      ? (openBlock(), createElementBlock("div", _hoisted_12$1, [
-          _hoisted_13$1,
-          (openBlock(true), createElementBlock(Fragment, null, renderList(events.value, (event) => {
-            return (openBlock(), createElementBlock("div", null, [
-              createVNode(_component_VButton, {
-                onClick: $event => (addItemToPlace(event, 'events')),
-                rounded: true,
-                icon: true,
-                disabled: isItemDisable(event)
-              }, {
+                _: 1 /* STABLE */
+              }),
+              createVNode(_component_VTab, null, {
                 default: withCtx(() => [
-                  (isItemDisable(event))
-                    ? (openBlock(), createBlock(_component_VIcon, {
-                        key: 0,
-                        name: "check"
-                      }))
-                    : createCommentVNode("v-if", true),
-                  (!isItemDisable(event))
-                    ? (openBlock(), createBlock(_component_VIcon, {
-                        key: 1,
-                        name: "add"
-                      }))
-                    : createCommentVNode("v-if", true)
+                  createTextVNode(" Événements ")
                 ]),
-                _: 2 /* DYNAMIC */
-              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick", "disabled"]),
-              createTextVNode(" " + toDisplayString(event.title), 1 /* TEXT */)
-            ]))
-          }), 256 /* UNKEYED_FRAGMENT */))
+                _: 1 /* STABLE */
+              })
+            ]),
+            _: 1 /* STABLE */
+          }, 8 /* PROPS */, ["modelValue"]),
+          createVNode(_component_VTabsItems, { "model-value": tab.value }, {
+            default: withCtx(() => [
+              createVNode(_component_VTabItem, null, {
+                default: withCtx(() => [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList(movies.value, (movie) => {
+                    return (openBlock(), createElementBlock("div", null, [
+                      createVNode(_component_VButton, {
+                        onClick: $event => (addItemToPlace(movie, 'movies')),
+                        rounded: true,
+                        icon: true,
+                        small: true,
+                        disabled: isItemDisable(movie)
+                      }, {
+                        default: withCtx(() => [
+                          createVNode(_component_VIcon, {
+                            name: isItemDisable(movie) ? 'check' : 'add',
+                            small: true
+                          }, null, 8 /* PROPS */, ["name"])
+                        ]),
+                        _: 2 /* DYNAMIC */
+                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick", "disabled"]),
+                      createTextVNode(" " + toDisplayString(movie.title), 1 /* TEXT */)
+                    ]))
+                  }), 256 /* UNKEYED_FRAGMENT */))
+                ]),
+                _: 1 /* STABLE */
+              }),
+              createVNode(_component_VTabItem, null, {
+                default: withCtx(() => [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList(events.value, (event) => {
+                    return (openBlock(), createElementBlock("div", null, [
+                      createVNode(_component_VButton, {
+                        onClick: $event => (addItemToPlace(event, 'events')),
+                        rounded: true,
+                        icon: true,
+                        small: true,
+                        disabled: isItemDisable(event)
+                      }, {
+                        default: withCtx(() => [
+                          createVNode(_component_VIcon, {
+                            name: isItemDisable(event) ? 'check' : 'add',
+                            small: true
+                          }, null, 8 /* PROPS */, ["name"])
+                        ]),
+                        _: 2 /* DYNAMIC */
+                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick", "disabled"]),
+                      createTextVNode(" " + toDisplayString(event.title), 1 /* TEXT */)
+                    ]))
+                  }), 256 /* UNKEYED_FRAGMENT */))
+                ]),
+                _: 1 /* STABLE */
+              })
+            ]),
+            _: 1 /* STABLE */
+          }, 8 /* PROPS */, ["model-value"])
         ]))
       : createCommentVNode("v-if", true)
   ], 64 /* STABLE_FRAGMENT */))
@@ -14945,7 +14981,7 @@ return (_ctx, _cache) => {
 }
 
 };
-var AddItemsToPlace = /*#__PURE__*/_export_sfc(_sfc_main$2, [['__file',"AddItemsToPlace.vue"]]);
+var AddItemsToPlace = /*#__PURE__*/_export_sfc(_sfc_main$2, [['__scopeId',"data-v-3979f9e3"],['__file',"AddItemsToPlace.vue"]]);
 
 var dist = {exports: {}};
 
@@ -15086,29 +15122,47 @@ return (_ctx, _cache) => {
 };
 var Navigation = /*#__PURE__*/_export_sfc(_sfc_main$1, [['__file',"Navigation.vue"]]);
 
-var css = ".resize-wrapper[data-v-7eb6c919] {\n  display: none !important; }\n\n.fc-event-main[data-v-7eb6c919] {\n  overflow: hidden; }\n\n.prog[data-v-7eb6c919] {\n  display: flex; }\n\n.prog[data-v-7eb6c919] * {\n  box-sizing: border-box; }\n\n.prog__left[data-v-7eb6c919] {\n  background-color: #f0f4f9;\n  margin: 0 1rem;\n  width: 15rem;\n  min-width: 15rem; }\n";
+var css$1 = ".listweek__details[data-v-fd8a3d08] {\n  display: flex;\n  line-height: normal; }\n\n.listweek__actions[data-v-fd8a3d08] {\n  margin-left: auto;\n  flex: 0 0 auto; }\n\n.listweek__description[data-v-fd8a3d08] {\n  font-size: 0.9rem; }\n\n.listweek__title__wrapper[data-v-fd8a3d08] {\n  padding-left: 1rem; }\n\n.listweek__title[data-v-fd8a3d08] {\n  display: flex;\n  align-items: center; }\n\n.listweek__status[data-v-fd8a3d08] {\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n  padding-left: 1rem;\n  font-size: 0.9rem; }\n\n.listweek__status .event-single[data-v-fd8a3d08] {\n  color: red; }\n\n.resize-wrapper[data-v-fd8a3d08] {\n  display: none !important; }\n\n.prog[data-v-fd8a3d08] {\n  display: flex; }\n\n.prog[data-v-fd8a3d08] * {\n  box-sizing: border-box; }\n\n.prog__left[data-v-fd8a3d08] {\n  margin: 0 1rem;\n  width: 15rem;\n  min-width: 15rem; }\n\n.prog__right[data-v-fd8a3d08] {\n  width: 100%; }\n";
+n(css$1,{});
+
+var css = "\n.fc-dayGridMonth-view .fc-event-main {\n  overflow: hidden;\n}\n.fc-event-main__content {\n  height: 100%;\n  width: 100%;\n  overflow: hidden;\n}\n.fc-event .fc-event-main:hover .fc-event-main__actions {\n  display: block;\n}\n.fc-event-main__time {\n  font-size: 0.8rem;\n  line-height: normal;\n}\n.fc-event-main__title {\n  font-size: 0.9rem;\n  line-height: normal;\n}\n.fc-event-main__actions {\n  display: none;\n  background-color: rgba(255, 255, 255, 1);\n  position: absolute;\n  top: 0;\n  right: 0;\n}\n.fc-v-event {\n  border-width: 2px;\n}\n.fc-event-main__status {\n  background-color: rgba(255, 255, 255, 1);\n  position: absolute;\n  bottom: -1rem;\n  right: 0;\n  border-radius: 0.4rem;\n  font-size: 0.7rem;\n  padding: 0.2rem;\n  color: var(--black);\n  border: 1px solid var(--fc-border-color);\n  line-height: normal;\n}\n.fc-event-main__status .event-single {\n  color: red;\n}\n";
 n(css,{});
 
-const _withScopeId = n => (pushScopeId("data-v-7eb6c919"),n=n(),popScopeId(),n);
+const _withScopeId = n => (pushScopeId("data-v-fd8a3d08"),n=n(),popScopeId(),n);
 const _hoisted_1 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createElementVNode("div", { class: "page-description" }, " Description de la page programmation ", -1 /* HOISTED */));
 const _hoisted_2 = { class: "prog" };
 const _hoisted_3 = { class: "prog__left" };
 const _hoisted_4 = { class: "prog__right" };
-const _hoisted_5 = { key: 0 };
-const _hoisted_6 = { key: 1 };
-const _hoisted_7 = ["onClick"];
-const _hoisted_8 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createElementVNode("br", null, null, -1 /* HOISTED */));
+const _hoisted_5 = { class: "fc-event-main__content" };
+const _hoisted_6 = { class: "fc-event-main__time" };
+const _hoisted_7 = { key: 0 };
+const _hoisted_8 = { key: 1 };
 const _hoisted_9 = ["onClick"];
-const _hoisted_10 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createElementVNode("br", null, null, -1 /* HOISTED */));
-const _hoisted_11 = ["onClick"];
-const _hoisted_12 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createElementVNode("br", null, null, -1 /* HOISTED */));
-const _hoisted_13 = ["onClick"];
-const _hoisted_14 = ["onClick"];
-const _hoisted_15 = ["onClick"];
-const _hoisted_16 = ["onClick"];
-const _hoisted_17 = { key: 0 };
-const _hoisted_18 = ["onClick"];
-const _hoisted_19 = ["onClick"];
+const _hoisted_10 = { class: "fc-event-main__actions" };
+const _hoisted_11 = {
+  key: 0,
+  class: "fc-event-main__status"
+};
+const _hoisted_12 = {
+  key: 2,
+  class: "event-single"
+};
+const _hoisted_13 = {
+  key: 1,
+  class: "listweek__details"
+};
+const _hoisted_14 = { class: "listweek__title__wrapper" };
+const _hoisted_15 = { class: "listweek__title" };
+const _hoisted_16 = { class: "listweek__status" };
+const _hoisted_17 = {
+  key: 2,
+  class: "event-single"
+};
+const _hoisted_18 = { class: "listweek__description" };
+const _hoisted_19 = { class: "listweek__actions" };
+const _hoisted_20 = { key: 0 };
+const _hoisted_21 = ["onClick"];
+const _hoisted_22 = ["onClick"];
 
 
 const _sfc_main = {
@@ -15123,7 +15177,6 @@ const _sfc_main = {
 
 const cinopsStore = useCinopsStore();
 const {place} = storeToRefs(cinopsStore);
-storeToRefs(cinopsStore);
 
 const api = useApi();
 const livePreviewMode = ref(false);
@@ -15179,7 +15232,9 @@ const props = __props;
 
 // Watch Theater ID change from URL and change selectedPlace in Cinops store
 watchEffect(() => {
-    cinopsStore.selectedPlace = props.theater || cinopsStore.selectedPlace || cinopsStore.defaultPlace.id;
+  if(props.theater) {
+    cinopsStore.selectedPlace = props.theater;
+  }
 });
 
 watch(place, () => {
@@ -15222,7 +15277,11 @@ function addMinutesToDate(date, n) {
 
 function findSessionColor(session) {
   const item = cinopsStore.place.items.find((e) => e.item.id === session.items[0].item.id);
-  return item ? item.color : "#efefef";
+  if (typeof item !== "undefined" && item.color != null) {
+    return item.color
+  } else {
+    return "#efefef"
+  }
 }
 
 function setEvents(info, successCallback, failureCallback) {
@@ -15246,12 +15305,16 @@ function setEvents(info, successCallback, failureCallback) {
                     title: eventEl.items[0] ? eventEl.items[0].item.title : null,
                     backgroundColor: (eventEl.active) ? color : "#efefef",
                     borderColor: color,
-                    textColor: isDarkColor(color) ? "white" : "dark",
+                    textColor: isDarkColor(color) && eventEl.active ? "#FFFFFF" : "#000000",
                     start: eventEl.date + " " + eventEl.time,
                     id: eventEl.id,
                     type: eventEl.items[0] ? eventEl.items[0].collection : null,
                     end: eventEl.duration ? addMinutesToDate(eventEl.date + " " + eventEl.time, eventEl.duration) : addMinutesToDate(eventEl.date + " " + eventEl.time, eventEl.items[0] ? eventEl.items[0].item.runtime : null),
-                    active: eventEl.active
+                    active: eventEl.active,
+                    premiere: eventEl.premiere,
+                    last: eventEl.last,
+                    single: eventEl.single,
+                    description: eventEl.description
                   };
                 })
         );
@@ -15307,11 +15370,13 @@ function sessionRefetch() {
 
 
 return (_ctx, _cache) => {
+  const _component_v_icon = resolveComponent("v-icon");
+  const _component_v_button = resolveComponent("v-button");
   const _component_sidebar_detail = resolveComponent("sidebar-detail");
   const _component_v_drawer = resolveComponent("v-drawer");
   const _component_drawer_item = resolveComponent("drawer-item");
-  const _component_v_icon = resolveComponent("v-icon");
   const _component_private_view = resolveComponent("private-view");
+  const _directive_tooltip = resolveDirective("tooltip");
 
   return (unref(place))
     ? (openBlock(), createBlock(_component_private_view, {
@@ -15319,8 +15384,41 @@ return (_ctx, _cache) => {
         splitView: livePreviewMode.value,
         title: unref(place).name
       }, {
+        "title-outer:prepend": withCtx(() => [
+          createVNode(_component_v_button, {
+            class: "header-icon",
+            rounded: "",
+            disabled: "",
+            icon: "",
+            secondary: ""
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_v_icon, { name: "calendar_month" })
+            ]),
+            _: 1 /* STABLE */
+          })
+        ]),
         headline: withCtx(() => [
           createTextVNode(" Programmation ")
+        ]),
+        actions: withCtx(() => [
+          withDirectives((openBlock(), createBlock(_component_v_button, {
+            onClick: _cache[0] || (_cache[0] = $event => (addMovie.value=true)),
+            icon: "",
+            rounded: ""
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_v_icon, { name: "add" })
+            ]),
+            _: 1 /* STABLE */
+          })), [
+            [
+              _directive_tooltip,
+              'Ajouter un film au cinéma',
+              void 0,
+              { bottom: true }
+            ]
+          ])
         ]),
         navigation: withCtx(() => [
           createTextVNode(toDisplayString(_ctx.cinema) + " ", 1 /* TEXT */),
@@ -15342,7 +15440,7 @@ return (_ctx, _cache) => {
         ]),
         default: withCtx(() => [
           createVNode(_component_v_drawer, {
-            onCancel: _cache[0] || (_cache[0] = $event => (addMovie.value=false)),
+            onCancel: _cache[1] || (_cache[1] = $event => (addMovie.value=false)),
             modelValue: addMovie.value,
             persistent: true,
             title: 'Ajouter un film au cinéma'
@@ -15356,7 +15454,7 @@ return (_ctx, _cache) => {
             ? (openBlock(), createBlock(_component_drawer_item, {
                 key: 0,
                 onInput: sessionUpdate,
-                "onUpdate:active": _cache[1] || (_cache[1] = $event => (sessionDrawerActive.value=false)),
+                "onUpdate:active": _cache[2] || (_cache[2] = $event => (sessionDrawerActive.value=false)),
                 collection: "sessions",
                 active: sessionDrawerActive.value,
                 primaryKey: sessionId.value
@@ -15378,88 +15476,133 @@ return (_ctx, _cache) => {
                 eventContent: withCtx((arg) => [
                   (arg.view.type === 'timeGridWeek' || arg.view.type === 'timeGridDay')
                     ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
-                        createElementVNode("div", null, [
-                          (arg.event.start)
-                            ? (openBlock(), createElementBlock("span", _hoisted_5, toDisplayString(arg.event.start.getHours()) + ":" + toDisplayString((arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes()), 1 /* TEXT */))
-                            : createCommentVNode("v-if", true),
-                          createTextVNode(),
-                          (arg.event.end)
-                            ? (openBlock(), createElementBlock("span", _hoisted_6, " - " + toDisplayString(arg.event.end.getHours()) + ":" + toDisplayString((arg.event.end.getMinutes() < 10 ? '0' : '') + arg.event.end.getMinutes()), 1 /* TEXT */))
-                            : createCommentVNode("v-if", true)
+                        createElementVNode("div", _hoisted_5, [
+                          createElementVNode("div", _hoisted_6, [
+                            (arg.event.start)
+                              ? (openBlock(), createElementBlock("span", _hoisted_7, toDisplayString(arg.event.start.getHours()) + ":" + toDisplayString((arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes()), 1 /* TEXT */))
+                              : createCommentVNode("v-if", true),
+                            (arg.event.end)
+                              ? (openBlock(), createElementBlock("span", _hoisted_8, " - " + toDisplayString(arg.event.end.getHours()) + ":" + toDisplayString((arg.event.end.getMinutes() < 10 ? '0' : '') + arg.event.end.getMinutes()), 1 /* TEXT */))
+                              : createCommentVNode("v-if", true)
+                          ]),
+                          createElementVNode("div", {
+                            onClick: $event => (sessionEdit(arg)),
+                            class: "fc-event-main__title"
+                          }, toDisplayString(arg.event.title), 9 /* TEXT, PROPS */, _hoisted_9)
                         ]),
-                        createElementVNode("div", null, [
-                          createElementVNode("b", {
-                            onClick: $event => (sessionEdit(arg))
-                          }, toDisplayString(arg.event.title), 9 /* TEXT, PROPS */, _hoisted_7),
-                          _hoisted_8
+                        createElementVNode("div", _hoisted_10, [
+                          createVNode(_component_v_icon, {
+                            onClick: $event => (sessionVisibility(arg)),
+                            small: "true",
+                            color: "black",
+                            name: arg.event.extendedProps.active ? 'visibility' : 'visibility_off',
+                            class: "fc-event-main__visibility"
+                          }, null, 8 /* PROPS */, ["onClick", "name"]),
+                          createVNode(_component_v_icon, {
+                            onClick: $event => (sessionEdit(arg)),
+                            small: "true",
+                            name: "edit",
+                            color: "black"
+                          }, null, 8 /* PROPS */, ["onClick"]),
+                          createVNode(_component_v_icon, {
+                            onClick: $event => (sessionDelete(arg)),
+                            small: "true",
+                            name: "delete_forever",
+                            color: "black"
+                          }, null, 8 /* PROPS */, ["onClick"])
                         ]),
-                        createElementVNode("button", {
-                          onClick: $event => (sessionVisibility(arg))
-                        }, [
-                          (arg.event.extendedProps.active)
-                            ? (openBlock(), createBlock(_component_v_icon, {
-                                key: 0,
-                                name: "visibility"
-                              }))
-                            : (openBlock(), createBlock(_component_v_icon, {
-                                key: 1,
-                                name: "visibility_off"
-                              }))
-                        ], 8 /* PROPS */, _hoisted_9),
-                        _hoisted_10,
-                        createElementVNode("button", {
-                          onClick: $event => (sessionEdit(arg))
-                        }, [
-                          createVNode(_component_v_icon, { name: "edit" })
-                        ], 8 /* PROPS */, _hoisted_11),
-                        _hoisted_12,
-                        createElementVNode("button", {
-                          onClick: $event => (sessionDelete(arg))
-                        }, [
-                          createVNode(_component_v_icon, { name: "delete_forever" })
-                        ], 8 /* PROPS */, _hoisted_13)
+                        (arg.event.extendedProps.premiere || arg.event.extendedProps.last || arg.event.extendedProps.single)
+                          ? (openBlock(), createElementBlock("div", _hoisted_11, [
+                              (arg.event.extendedProps.premiere)
+                                ? (openBlock(), createBlock(_component_v_icon, {
+                                    key: 0,
+                                    xSmall: "",
+                                    color: "orange",
+                                    class: "event-premiere",
+                                    name: "star"
+                                  }))
+                                : createCommentVNode("v-if", true),
+                              (arg.event.extendedProps.last)
+                                ? (openBlock(), createBlock(_component_v_icon, {
+                                    key: 1,
+                                    xSmall: "",
+                                    color: "red",
+                                    class: "event-last",
+                                    name: "warning"
+                                  }))
+                                : createCommentVNode("v-if", true),
+                              (arg.event.extendedProps.single)
+                                ? (openBlock(), createElementBlock("span", _hoisted_12, "SU"))
+                                : createCommentVNode("v-if", true)
+                            ]))
+                          : createCommentVNode("v-if", true)
                       ], 64 /* STABLE_FRAGMENT */))
                     : (arg.view.type === 'listWeek')
-                      ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
-                          createElementVNode("button", {
-                            onClick: $event => (sessionVisibility(arg))
-                          }, [
-                            (arg.event.extendedProps.active)
-                              ? (openBlock(), createBlock(_component_v_icon, {
-                                  key: 0,
-                                  name: "visibility"
-                                }))
-                              : (openBlock(), createBlock(_component_v_icon, {
-                                  key: 1,
-                                  name: "visibility_off"
-                                }))
-                          ], 8 /* PROPS */, _hoisted_14),
-                          createElementVNode("button", {
-                            onClick: $event => (sessionEdit(arg))
-                          }, [
-                            createVNode(_component_v_icon, { name: "edit" })
-                          ], 8 /* PROPS */, _hoisted_15),
-                          createElementVNode("button", {
-                            onClick: $event => (sessionDelete(arg))
-                          }, [
-                            createVNode(_component_v_icon, { name: "delete_forever" })
-                          ], 8 /* PROPS */, _hoisted_16),
-                          createElementVNode("b", null, toDisplayString(arg.event.title), 1 /* TEXT */)
-                        ], 64 /* STABLE_FRAGMENT */))
+                      ? (openBlock(), createElementBlock("div", _hoisted_13, [
+                          createVNode(_component_v_icon, {
+                            onClick: $event => (sessionVisibility(arg)),
+                            clickable: "",
+                            name: arg.event.extendedProps.active ? 'visibility' : 'visibility_off',
+                            color: arg.event.extendedProps.active ? '#84cc16' : 'inherit' 
+                          }, null, 8 /* PROPS */, ["onClick", "name", "color"]),
+                          createElementVNode("div", _hoisted_14, [
+                            createElementVNode("b", _hoisted_15, [
+                              createVNode(_component_v_icon, {
+                                class: "event-type",
+                                name: arg.event.extendedProps.type == 'movies' ? 'theaters' : 'campaign'
+                              }, null, 8 /* PROPS */, ["name"]),
+                              createTextVNode(" " + toDisplayString(arg.event.title) + " ", 1 /* TEXT */),
+                              createElementVNode("div", _hoisted_16, [
+                                (arg.event.extendedProps.premiere)
+                                  ? (openBlock(), createBlock(_component_v_icon, {
+                                      key: 0,
+                                      color: "orange",
+                                      class: "event-premiere",
+                                      name: "star"
+                                    }))
+                                  : createCommentVNode("v-if", true),
+                                (arg.event.extendedProps.last)
+                                  ? (openBlock(), createBlock(_component_v_icon, {
+                                      key: 1,
+                                      color: "red",
+                                      class: "event-last",
+                                      name: "warning"
+                                    }))
+                                  : createCommentVNode("v-if", true),
+                                (arg.event.extendedProps.single)
+                                  ? (openBlock(), createElementBlock("span", _hoisted_17, "Séance unique"))
+                                  : createCommentVNode("v-if", true)
+                              ])
+                            ]),
+                            createElementVNode("div", _hoisted_18, toDisplayString(arg.event.extendedProps.description), 1 /* TEXT */)
+                          ]),
+                          createElementVNode("div", _hoisted_19, [
+                            createVNode(_component_v_icon, {
+                              onClick: $event => (sessionEdit(arg)),
+                              name: "edit",
+                              clickable: ""
+                            }, null, 8 /* PROPS */, ["onClick"]),
+                            createVNode(_component_v_icon, {
+                              onClick: $event => (sessionDelete(arg)),
+                              name: "delete_forever",
+                              clickable: ""
+                            }, null, 8 /* PROPS */, ["onClick"])
+                          ])
+                        ]))
                       : (arg.view.type === 'dayGridMonth')
                         ? (openBlock(), createElementBlock(Fragment, { key: 2 }, [
                             (arg.event.start)
-                              ? (openBlock(), createElementBlock("span", _hoisted_17, toDisplayString(arg.event.start.getHours()) + ":" + toDisplayString((arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes()), 1 /* TEXT */))
+                              ? (openBlock(), createElementBlock("span", _hoisted_20, toDisplayString(arg.event.start.getHours()) + ":" + toDisplayString((arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes()), 1 /* TEXT */))
                               : createCommentVNode("v-if", true),
                             createTextVNode(),
                             createElementVNode("b", {
                               onClick: $event => (sessionEdit(arg))
-                            }, toDisplayString(arg.event.title), 9 /* TEXT, PROPS */, _hoisted_18)
+                            }, toDisplayString(arg.event.title), 9 /* TEXT, PROPS */, _hoisted_21)
                           ], 64 /* STABLE_FRAGMENT */))
                         : (openBlock(), createElementBlock("b", {
                             key: 3,
                             onClick: $event => (sessionEdit(arg))
-                          }, toDisplayString(arg.event.title), 9 /* TEXT, PROPS */, _hoisted_19))
+                          }, toDisplayString(arg.event.title), 9 /* TEXT, PROPS */, _hoisted_22))
                 ]),
                 _: 1 /* STABLE */
               }, 8 /* PROPS */, ["options"])
@@ -15473,7 +15616,7 @@ return (_ctx, _cache) => {
 }
 
 };
-var Cinops = /*#__PURE__*/_export_sfc(_sfc_main, [['__scopeId',"data-v-7eb6c919"],['__file',"cinops.vue"]]);
+var Cinops = /*#__PURE__*/_export_sfc(_sfc_main, [['__scopeId',"data-v-fd8a3d08"],['__file',"cinops.vue"]]);
 
 var index = {
 	id: 'cinops-program',

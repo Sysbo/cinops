@@ -17,7 +17,6 @@ import Navigation from './components/Navigation.vue'
 
 const cinopsStore = useCinopsStore()
 const {place} = storeToRefs(cinopsStore)
-const {defaultPlace} = storeToRefs(cinopsStore)
 
 const api = useApi()
 const livePreviewMode = ref(false)
@@ -78,7 +77,9 @@ const props = defineProps({
 
 // Watch Theater ID change from URL and change selectedPlace in Cinops store
 watchEffect(() => {
-    cinopsStore.selectedPlace = props.theater || cinopsStore.selectedPlace || cinopsStore.defaultPlace.id
+  if(props.theater) {
+    cinopsStore.selectedPlace = props.theater
+  }
 })
 
 watch(place, () => {
@@ -121,7 +122,11 @@ function addMinutesToDate(date, n) {
 
 function findSessionColor(session) {
   const item = cinopsStore.place.items.find((e) => e.item.id === session.items[0].item.id)
-  return item ? item.color : "#efefef";
+  if (typeof item !== "undefined" && item.color != null) {
+    return item.color
+  } else {
+    return "#efefef"
+  }
 }
 
 function setEvents(info, successCallback, failureCallback) {
@@ -145,12 +150,16 @@ function setEvents(info, successCallback, failureCallback) {
                     title: eventEl.items[0] ? eventEl.items[0].item.title : null,
                     backgroundColor: (eventEl.active) ? color : "#efefef",
                     borderColor: color,
-                    textColor: isDarkColor(color) ? "white" : "dark",
+                    textColor: isDarkColor(color) && eventEl.active ? "#FFFFFF" : "#000000",
                     start: eventEl.date + " " + eventEl.time,
                     id: eventEl.id,
                     type: eventEl.items[0] ? eventEl.items[0].collection : null,
                     end: eventEl.duration ? addMinutesToDate(eventEl.date + " " + eventEl.time, eventEl.duration) : addMinutesToDate(eventEl.date + " " + eventEl.time, eventEl.items[0] ? eventEl.items[0].item.runtime : null),
-                    active: eventEl.active
+                    active: eventEl.active,
+                    premiere: eventEl.premiere,
+                    last: eventEl.last,
+                    single: eventEl.single,
+                    description: eventEl.description
                   };
                 })
         );
@@ -208,9 +217,18 @@ function sessionRefetch() {
 
 <template>
   <private-view :splitView="livePreviewMode" v-if="place" :title="place.name">
-    <!--<template #title-outer:prepend> test </template>-->
+    <template #title-outer:prepend>
+      <v-button class="header-icon" rounded disabled icon secondary>
+        <v-icon name="calendar_month"/>
+      </v-button>
+    </template>
     <template #headline>
       Programmation
+    </template>
+    <template #actions>
+      <v-button @click="addMovie=true" v-tooltip.bottom="'Ajouter un film au cinéma'" icon rounded>
+        <v-icon name="add"/>
+      </v-button>
     </template>
     <template #navigation>
       {{ cinema }}
@@ -251,38 +269,65 @@ function sessionRefetch() {
         <FullCalendar ref="fullcalendar" :options="calendarOptions">
           <template v-slot:eventContent='arg'>
             <template v-if="arg.view.type === 'timeGridWeek' || arg.view.type === 'timeGridDay'">
-              <div><span v-if="arg.event.start">{{
-                  arg.event.start.getHours()
-                }}:{{ (arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes() }}</span> <span
-                  v-if="arg.event.end"> - {{
-                  arg.event.end.getHours()
-                }}:{{ (arg.event.end.getMinutes() < 10 ? '0' : '') + arg.event.end.getMinutes() }}</span></div>
-              <div><b @click="sessionEdit(arg)">{{ arg.event.title }}</b><br></div>
-              <button @click="sessionVisibility(arg)">
-                <v-icon v-if="arg.event.extendedProps.active" name="visibility"/>
-                <v-icon v-else name="visibility_off"/>
-              </button>
-              <br>
-              <button @click="sessionEdit(arg)">
-                <v-icon name="edit"/>
-              </button>
-              <br>
-              <button @click="sessionDelete(arg)">
-                <v-icon name="delete_forever"/>
-              </button>
+              <div class="fc-event-main__content">
+                <div class="fc-event-main__time">
+                <span v-if="arg.event.start">{{
+                    arg.event.start.getHours()
+                  }}:{{ (arg.event.start.getMinutes() < 10 ? '0' : '') + arg.event.start.getMinutes() }}
+                </span>
+                  <span
+                      v-if="arg.event.end"> - {{
+                      arg.event.end.getHours()
+                    }}:{{ (arg.event.end.getMinutes() < 10 ? '0' : '') + arg.event.end.getMinutes() }}
+                </span>
+                </div>
+                <div @click="sessionEdit(arg)" class="fc-event-main__title">
+                  {{ arg.event.title }}
+                </div>
+              </div>
+
+              <div class="fc-event-main__actions">
+                <v-icon @click="sessionVisibility(arg)" small="true" color="black"
+                        :name="arg.event.extendedProps.active ? 'visibility' : 'visibility_off'"
+                        class="fc-event-main__visibility"/>
+                <v-icon @click="sessionEdit(arg)" small="true" name="edit" color="black"/>
+                <v-icon @click="sessionDelete(arg)" small="true" name="delete_forever" color="black"/>
+              </div>
+
+              <div class="fc-event-main__status" v-if="arg.event.extendedProps.premiere || arg.event.extendedProps.last || arg.event.extendedProps.single">
+                <v-icon v-if="arg.event.extendedProps.premiere" xSmall color="orange" class="event-premiere"
+                        name="star"/>
+                <v-icon v-if="arg.event.extendedProps.last" xSmall color="red" class="event-last" name="warning"/>
+                <span v-if="arg.event.extendedProps.single" class="event-single">SU</span>
+              </div>
             </template>
             <template v-else-if="arg.view.type === 'listWeek'">
-              <button @click="sessionVisibility(arg)">
-                <v-icon v-if="arg.event.extendedProps.active" name="visibility"/>
-                <v-icon v-else name="visibility_off"/>
-              </button>
-              <button @click="sessionEdit(arg)">
-                <v-icon name="edit"/>
-              </button>
-              <button @click="sessionDelete(arg)">
-                <v-icon name="delete_forever"/>
-              </button>
-              <b>{{ arg.event.title }}</b>
+              <div class="listweek__details">
+                <v-icon @click="sessionVisibility(arg)" clickable
+                        :name="arg.event.extendedProps.active ? 'visibility' : 'visibility_off'"
+                        :color="arg.event.extendedProps.active ? '#84cc16' : 'inherit' "/>
+                <div class="listweek__title__wrapper">
+                  <b class="listweek__title">
+                    <v-icon class="event-type"
+                            :name="arg.event.extendedProps.type == 'movies' ? 'theaters' : 'campaign'"/>
+                    {{ arg.event.title }}
+                    <div class="listweek__status">
+                      <v-icon v-if="arg.event.extendedProps.premiere" color="orange" class="event-premiere"
+                              name="star"/>
+                      <v-icon v-if="arg.event.extendedProps.last" color="red" class="event-last" name="warning"/>
+                      <span v-if="arg.event.extendedProps.single" class="event-single">Séance unique</span>
+                    </div>
+                  </b>
+
+                  <div class="listweek__description">
+                    {{ arg.event.extendedProps.description }}
+                  </div>
+                </div>
+                <div class="listweek__actions">
+                  <v-icon @click="sessionEdit(arg)" name="edit" clickable/>
+                  <v-icon @click="sessionDelete(arg)" name="delete_forever" clickable/>
+                </div>
+              </div>
             </template>
             <template v-else-if="arg.view.type === 'dayGridMonth'">
           <span v-if="arg.event.start">{{
@@ -303,12 +348,43 @@ function sessionRefetch() {
 
 <style lang="scss" scoped>
 
-.resize-wrapper {
-  display: none !important;
+.listweek__details {
+  display: flex;
+  line-height: normal;
 }
 
-.fc-event-main {
-  overflow: hidden;
+.listweek__actions {
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.listweek__description {
+  font-size: 0.9rem;
+}
+
+.listweek__title__wrapper {
+  padding-left: 1rem;
+}
+
+.listweek__title {
+  display: flex;
+  align-items: center;
+}
+
+.listweek__status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 1rem;
+  font-size: 0.9rem;
+}
+
+.listweek__status .event-single {
+  color: red;
+}
+
+.resize-wrapper {
+  display: none !important;
 }
 
 .prog {
@@ -321,7 +397,6 @@ function sessionRefetch() {
 }
 
 .prog__left {
-  background-color: #f0f4f9;
   margin: 0 1rem;
   width: 15rem;
   min-width: 15rem;
@@ -329,6 +404,63 @@ function sessionRefetch() {
 
 .prog__right {
   //flex: 1 1 100%;
+  width: 100%;
 }
 
+</style>
+
+<style>
+
+.fc-dayGridMonth-view .fc-event-main {
+  overflow: hidden;
+}
+
+.fc-event-main__content {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.fc-event .fc-event-main:hover .fc-event-main__actions {
+  display: block;
+}
+
+.fc-event-main__time {
+  font-size: 0.8rem;
+  line-height: normal;
+}
+
+.fc-event-main__title {
+  font-size: 0.9rem;
+  line-height: normal;
+}
+
+.fc-event-main__actions {
+  display: none;
+  background-color: rgba(255, 255, 255, 1);
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.fc-v-event {
+  border-width: 2px;
+}
+
+.fc-event-main__status {
+  background-color: rgba(255, 255, 255, 1);
+  position: absolute;
+  bottom: -1rem;
+  right: 0;
+  border-radius: 0.4rem;
+  font-size: 0.7rem;
+  padding: 0.2rem;
+  color: var(--black);
+  border: 1px solid var(--fc-border-color);
+  line-height: normal;
+}
+
+.fc-event-main__status .event-single {
+  color: red;
+}
 </style>
