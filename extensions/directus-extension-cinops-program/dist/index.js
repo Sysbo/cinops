@@ -14155,7 +14155,7 @@ var _export_sfc = (sfc, props) => {
   return target;
 };
 
-var css$4 = ".place-items[data-v-d728c2be] {\n  display: flex;\n  flex-flow: column; }\n\n.draggable-item.eitem[data-v-d728c2be] {\n  cursor: grab;\n  opacity: 1; }\n\n.eitem[data-v-d728c2be] {\n  border-top: 2px solid var(--theme--border-color-subdued);\n  border-right: 2px solid var(--theme--border-color-subdued);\n  border-left: 2px solid var(--theme--border-color-subdued);\n  opacity: 0.8; }\n\n.eitem__detail[data-v-d728c2be] {\n  width: 100%;\n  padding: 0.5rem 0.5rem 0.5rem 0; }\n\n.eitem__title[data-v-d728c2be] {\n  line-height: normal;\n  color: var(--black);\n  font-size: 0.9rem; }\n\n.eitem__wrapper[data-v-d728c2be] {\n  display: flex; }\n\n.eitem__color[data-v-d728c2be] {\n  display: flex; }\n\n.eitem__visibility[data-v-d728c2be] {\n  display: flex;\n  padding: 0.2rem 0.2rem 0.2rem 0.4rem; }\n\n.eitem__timetable[data-v-d728c2be] {\n  display: flex;\n  padding: 0.2rem; }\n\n.eitem__color__inner[data-v-d728c2be] {\n  height: 100%;\n  width: 0.7rem;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 auto; }\n\n.eitem__color input[data-v-d728c2be] {\n  height: 130%;\n  width: 2rem;\n  border: unset;\n  padding: 0;\n  margin: 0;\n  flex: 0 0 auto;\n  cursor: pointer; }\n\n.eitem__actions[data-v-d728c2be] {\n  display: flex;\n  align-items: start; }\n\n.eitem__actions .v-icon[data-v-d728c2be] {\n  --v-icon-size: 15px; }\n\n.eitem__info[data-v-d728c2be] {\n  display: flex;\n  gap: 0.3rem; }\n\n.pills[data-v-d728c2be] {\n  background-color: var(--theme--border-color-subdued);\n  padding: 0.2rem 0.3rem;\n  font-size: .75rem;\n  border-radius: .25rem; }\n\n.pills .v-icon[data-v-d728c2be] {\n  --v-icon-size: 10.5px; }\n\n/*\n.eitem__detail {\n  flex: 1;\n  padding: 0 0 0.2rem 0;\n}\n\n.eitem__actions {\n  flex: 0 0 auto;\n  display: flex;\n  justify-content: end;\n  border-top: 1px solid #f0f4f9;\n\n  button {\n    border-left: 1px solid #f0f4f9;\n  }\n}\n\n.eitem__color {\n  //padding: 0.5rem;\n}\n\n.eitem__color__inner {\n  height: 100%;\n  width: 0.6rem;\n  //border-radius: 50%;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 auto;\n}\n\n.eitem__color input {\n  height: 120%;\n  width: 1rem;\n  border: unset;\n  padding: 0;\n  margin: 0;\n  flex: 0 0 auto;\n}\n\n.eitem__info {\n  display: flex;\n  gap: 0.2rem;\n}\n\n.pills {\n  //background-color: rgb(243, 244, 246);\n  padding: 0 0.5rem;\n  font-size: .75rem;\n  border-radius: .25rem;\n  margin-right: auto;\n\n}\n\n.pills .v-icon {\n  --v-icon-size: 10.5px;\n}*/\n";
+var css$4 = ".place-items[data-v-ecddf1a2] {\n  display: flex;\n  flex-flow: column; }\n\n.draggable-item.eitem[data-v-ecddf1a2] {\n  cursor: grab;\n  opacity: 1; }\n\n.eitem[data-v-ecddf1a2] {\n  border-top: 2px solid var(--theme--border-color-subdued);\n  border-right: 2px solid var(--theme--border-color-subdued);\n  border-left: 2px solid var(--theme--border-color-subdued);\n  opacity: 0.8; }\n\n.eitem__detail[data-v-ecddf1a2] {\n  width: 100%;\n  padding: 0.5rem 0.5rem 0.5rem 0; }\n\n.eitem__title[data-v-ecddf1a2] {\n  line-height: normal;\n  color: var(--black);\n  font-size: 0.9rem; }\n\n.eitem__wrapper[data-v-ecddf1a2] {\n  display: flex; }\n\n.eitem__color[data-v-ecddf1a2] {\n  display: flex; }\n\n.eitem__visibility[data-v-ecddf1a2] {\n  display: flex;\n  padding: 0.2rem 0.2rem 0.2rem 0.4rem; }\n\n.eitem__timetable[data-v-ecddf1a2] {\n  display: flex;\n  padding: 0.2rem; }\n\n.eitem__color__inner[data-v-ecddf1a2] {\n  height: 100%;\n  width: 0.7rem;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 auto; }\n\n.eitem__color input[data-v-ecddf1a2] {\n  height: 130%;\n  width: 2rem;\n  border: unset;\n  padding: 0;\n  margin: 0;\n  flex: 0 0 auto;\n  cursor: pointer; }\n\n.eitem__actions[data-v-ecddf1a2] {\n  display: flex;\n  align-items: start; }\n\n.eitem__actions .v-icon[data-v-ecddf1a2] {\n  --v-icon-size: 15px; }\n\n.eitem__info[data-v-ecddf1a2] {\n  display: flex;\n  gap: 0.3rem; }\n\n.pills[data-v-ecddf1a2] {\n  background-color: var(--theme--border-color-subdued);\n  padding: 0.2rem 0.3rem;\n  font-size: .75rem;\n  border-radius: .25rem; }\n\n.pills .v-icon[data-v-ecddf1a2] {\n  --v-icon-size: 10.5px; }\n\n/*\n.eitem__detail {\n  flex: 1;\n  padding: 0 0 0.2rem 0;\n}\n\n.eitem__actions {\n  flex: 0 0 auto;\n  display: flex;\n  justify-content: end;\n  border-top: 1px solid #f0f4f9;\n\n  button {\n    border-left: 1px solid #f0f4f9;\n  }\n}\n\n.eitem__color {\n  //padding: 0.5rem;\n}\n\n.eitem__color__inner {\n  height: 100%;\n  width: 0.6rem;\n  //border-radius: 50%;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 auto;\n}\n\n.eitem__color input {\n  height: 120%;\n  width: 1rem;\n  border: unset;\n  padding: 0;\n  margin: 0;\n  flex: 0 0 auto;\n}\n\n.eitem__info {\n  display: flex;\n  gap: 0.2rem;\n}\n\n.pills {\n  //background-color: rgb(243, 244, 246);\n  padding: 0 0.5rem;\n  font-size: .75rem;\n  border-radius: .25rem;\n  margin-right: auto;\n\n}\n\n.pills .v-icon {\n  --v-icon-size: 10.5px;\n}*/\n";
 n(css$4,{});
 
 const _hoisted_1$3 = {
@@ -14219,8 +14219,9 @@ function itemEdit(item) {
   itemCollection.value = item.collection;
 }
 
-function itemUpdate(item) {
-  api.patch("/items/sessions/" + item.id, item)
+function itemUpdate(item, collection) {
+  console.log(item + collection);
+  api.patch("/items/" + collection + "/" + item.id, item)
       .then(() => {
         cinopsStore.getPlace();
       });
@@ -14341,8 +14342,8 @@ return (_ctx, _cache) => {
     (itemId.value)
       ? (openBlock(), createBlock(_component_drawer_item, {
           key: 0,
-          onInput: itemUpdate,
-          "onUpdate:active": _cache[0] || (_cache[0] = $event => (itemDrawerActive.value=false)),
+          onInput: _cache[0] || (_cache[0] = item => itemUpdate(item,itemCollection.value)),
+          "onUpdate:active": _cache[1] || (_cache[1] = $event => (itemDrawerActive.value=false)),
           collection: itemCollection.value,
           active: itemDrawerActive.value,
           primaryKey: itemId.value
@@ -14353,7 +14354,7 @@ return (_ctx, _cache) => {
 }
 
 };
-var PlaceItems = /*#__PURE__*/_export_sfc(_sfc_main$4, [['__scopeId',"data-v-d728c2be"],['__file',"PlaceItems.vue"]]);
+var PlaceItems = /*#__PURE__*/_export_sfc(_sfc_main$4, [['__scopeId',"data-v-ecddf1a2"],['__file',"PlaceItems.vue"]]);
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 

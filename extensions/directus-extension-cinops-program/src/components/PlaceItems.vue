@@ -51,8 +51,9 @@ function itemEdit(item) {
   itemCollection.value = item.collection
 }
 
-function itemUpdate(item) {
-  api.patch("/items/sessions/" + item.id, item)
+function itemUpdate(item, collection) {
+  console.log(item + collection)
+  api.patch("/items/" + collection + "/" + item.id, item)
       .then(() => {
         cinopsStore.getPlace()
       })
@@ -134,7 +135,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <drawer-item v-if="itemId" @input="itemUpdate" @update:active="itemDrawerActive=false"
+  <drawer-item v-if="itemId" @input="item => itemUpdate(item,itemCollection)" @update:active="itemDrawerActive=false"
                :collection="itemCollection"
                :active="itemDrawerActive" :primaryKey="itemId"/>
 </template>
