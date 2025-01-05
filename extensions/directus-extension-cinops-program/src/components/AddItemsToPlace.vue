@@ -11,7 +11,7 @@ const events = ref(Array)
 const search = ref("")
 const searchMovies = ref(Array)
 const searchEvents = ref(Array)
-const tab = ref([1])
+const tab = ref([0])
 
 watch(search, () => {
   searchFor(search)
