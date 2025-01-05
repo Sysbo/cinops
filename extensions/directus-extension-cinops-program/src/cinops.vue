@@ -231,7 +231,7 @@ function sessionRefetch() {
       Programmation
     </template>
     <template #actions>
-      <v-button @click="addMovie=true" v-tooltip.bottom="'Ajouter un film au cinéma'" icon rounded>
+      <v-button @click="addMovie=true" v-tooltip.bottom="'Ajouter un élément au cinéma'" icon rounded>
         <v-icon name="add"/>
       </v-button>
     </template>
@@ -255,7 +255,7 @@ function sessionRefetch() {
     </template>
 
     <v-drawer @cancel="addMovie=false" :modelValue="addMovie" :persistent="true"
-              :title="'Ajouter un film au cinéma'">
+              :title="'Ajouter un élément au cinéma'">
       <AddItemsToPlace/>
     </v-drawer>
 

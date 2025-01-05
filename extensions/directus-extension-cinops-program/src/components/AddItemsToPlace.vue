@@ -18,14 +18,14 @@ watch(search, () => {
 })
 
 function getLastMovies() {
-  api.get("/items/movies?fields[]=id,title,places.places_id&limit=30"
+  api.get("/items/movies?fields[]=id,title,places.places_id&limit=30&sort[]=-date_created"
   ).then((res) => {
     movies.value = res.data.data
   });
 }
 
 function getLastEvents() {
-  api.get("/items/events?fields[]=id,title,places.places_id&limit=30").then((res) => {
+  api.get("/items/events?fields[]=id,title,places.places_id&limit=30&sort[]=-date_created").then((res) => {
     events.value = res.data.data
   });
 }
