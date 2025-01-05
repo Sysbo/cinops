@@ -161,7 +161,8 @@ function setEvents(info, successCallback, failureCallback) {
                     premiere: eventEl.premiere,
                     last: eventEl.last,
                     single: eventEl.single,
-                    description: eventEl.description
+                    description: eventEl.description,
+                    version: eventEl.items[0] ? eventEl.items[0].item.version : null
                   };
                 })
         );
@@ -296,6 +297,7 @@ function sessionRefetch() {
                 </span>
                 </div>
                 <div @click="sessionEdit(arg)" class="fc-event-main__title">
+                  <span class="fc-event-main__version">{{ arg.event.extendedProps.version }}</span>
                   {{ arg.event.title }}
                 </div>
               </div>
@@ -325,7 +327,7 @@ function sessionRefetch() {
                   <b class="listweek__title">
                     <v-icon class="event-type"
                             :name="arg.event.extendedProps.type == 'movies' ? 'theaters' : 'campaign'"/>
-                    {{ arg.event.title }}
+                    <span class="listweek__version" v-if="arg.event.extendedProps.version">{{ arg.event.extendedProps.version }} • &nbsp</span> {{ arg.event.title }}
                     <div class="listweek__status">
                       <v-icon v-if="arg.event.extendedProps.premiere" color="orange" class="event-premiere"
                               name="star"/>
@@ -384,6 +386,10 @@ function sessionRefetch() {
 .listweek__title {
   display: flex;
   align-items: center;
+}
+
+.listweek__version {
+  color: gray;
 }
 
 .listweek__status {

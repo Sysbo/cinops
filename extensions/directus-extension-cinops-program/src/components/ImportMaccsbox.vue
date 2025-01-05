@@ -6,6 +6,7 @@ import Papa from 'papaparse'
 const api = useApi()
 const file = ref(null)
 const maccsboxResults = ref([])
+const maccsboxTotal = ref(0)
 
 
 function importCSV() {
@@ -14,6 +15,7 @@ function importCSV() {
     header: true,
     complete: function (results) {
       let csvData = results.data
+      maccsboxTotal.value = results.data.length
       csvData.forEach(async (row) => {
         if (row["Titre"].length === 0 || row["Code externe"].length === 0) return
         let movie = {
@@ -102,7 +104,7 @@ function populateFile(event) {
       </div>
     </div>
     <div class="maccsbox__results">
-      <div v-if="maccsboxResults.length > 0">Total : {{ maccsboxResults.length }}</div>
+      <div v-if="maccsboxResults.length > 0">Total : {{ maccsboxResults.length }} / </div>
       <div class="maccsbox__result" v-for="mbr in maccsboxResults">
         <VNotice :icon="mbr.icon" :type="mbr.status">
           <div>
