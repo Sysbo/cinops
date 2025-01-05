@@ -123,6 +123,7 @@ function addMinutesToDate(date, n) {
 }
 
 function findSessionColor(session) {
+  if(session.items.length === 0) return "#efefef"
   const item = cinopsStore.place.items.find((e) => e.item.id === session.items[0].item.id)
   if (typeof item !== "undefined" && item.color != null) {
     return item.color
@@ -146,6 +147,7 @@ function setEvents(info, successCallback, failureCallback) {
                     res.data.data
                 )
                 .map(function (eventEl) {
+                  console.log(eventEl)
                   const color = findSessionColor(eventEl)
                   return {
                     display: "block",
