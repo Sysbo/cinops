@@ -6,7 +6,7 @@ import Papa from 'papaparse'
 const api = useApi()
 const file = ref(null)
 const maccsboxResults = ref([])
-const maccsboxTotal = ref(0)
+const loading = ref(false)
 
 
 function importCSV() {
@@ -15,9 +15,12 @@ function importCSV() {
     header: true,
     complete: function (results) {
       let csvData = results.data
-      maccsboxTotal.value = results.data.length
+      loading.value = true
+      let i = 0
+      let k = 0
       csvData.forEach(async (row) => {
         if (row["Titre"].length === 0 || row["Code externe"].length === 0) return
+        i++
         let movie = {
           "title": row["Titre"],
           "visa": row["Code externe"],
@@ -32,6 +35,7 @@ function importCSV() {
         await api.get("/items/movies?filter[visa][_eq]=" +
             row["Code externe"] +
             "&fields[]=id,title").then((res) => {
+          k++
           let exist = res.data.data.length > 0
           if (exist) {
             maccsboxResults.value.push({
@@ -46,7 +50,7 @@ function importCSV() {
                 row["Distributeur"] +
                 "&fields[]=id,title").then((res) => {
 
-              if(res.data.data[0].id) {
+              if (res.data.data[0].id) {
                 movie.distributor_id.id = res.data.data[0].id
                 console.log(movie.distributor_id)
               }
@@ -70,8 +74,14 @@ function importCSV() {
               });
             })
           }
+        }).then(() => {
+          if(i === k) {
+            loading.value = false
+          }
         });
       })
+
+
     }
   })
 
@@ -104,7 +114,11 @@ function populateFile(event) {
       </div>
     </div>
     <div class="maccsbox__results">
-      <div v-if="maccsboxResults.length > 0">Total : {{ maccsboxResults.length }} / </div>
+      <VProgressCircular v-if="loading"
+                         :indeterminate="true"
+                         :large="true"
+      />
+      <div v-if="maccsboxResults.length > 0">Total : {{ maccsboxResults.length }}</div>
       <div class="maccsbox__result" v-for="mbr in maccsboxResults">
         <VNotice :icon="mbr.icon" :type="mbr.status">
           <div>
