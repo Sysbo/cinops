@@ -297,7 +297,7 @@ function sessionRefetch() {
                 </span>
                 </div>
                 <div @click="sessionEdit(arg)" class="fc-event-main__title">
-                  <span class="fc-event-main__version">{{ arg.event.extendedProps.version }}</span>
+                  <div class="fc-event-main__version">{{ arg.event.extendedProps.version }}</div>
                   {{ arg.event.title }}
                 </div>
               </div>
