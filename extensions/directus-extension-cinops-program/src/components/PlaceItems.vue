@@ -40,7 +40,6 @@ function setItemColor(e, item) {
 
 function getItemSessions(item) {
   api.get("/items/sessions_items?filter[item][_eq]=" + item.item.id + "&fields[]=id").then((res) => {
-    console.log(res.data.data.length)
     return res.data.data.length
   });
 }
@@ -52,7 +51,6 @@ function itemEdit(item) {
 }
 
 function itemUpdate(item, collection) {
-  console.log(item + collection)
   api.patch("/items/" + collection + "/" + item.id, item)
       .then(() => {
         cinopsStore.getPlace()
@@ -91,12 +89,26 @@ onMounted(() => {
   setDraggableEvents();
 })
 
+function sortedPlaceItems() {
+  let sortedArray = cinopsStore.place.items;
+  sortedArray.sort((a, b) => {
+    let comparison = 0;
+    if (a.item.title < b.item.title) {
+      comparison = -1;
+    } else if (a.item.title > b.item.title) {
+      comparison = 1;
+    }
+    return comparison;
+  });
+  return sortedArray;
+}
+
 </script>
 
 <template>
   <div id="draggables" class="place-items">
     <div :class="item.item.runtime > 0 ? 'draggable-item eitem' : 'eitem'" :data-event="eventData(item)"
-         v-for="item in cinopsStore.place.items">
+         v-for="item in sortedPlaceItems()">
       <div class="eitem__wrapper">
         <div class="eitem__color">
           <div class="eitem__color__inner">
@@ -120,6 +132,7 @@ onMounted(() => {
             {{ item.item.title }}
             <div class="eitem__info">
               <span class="pills"><VIcon :small="true" name="timer"/> {{ item.item.runtime }} min.</span>
+              <span class="pills" v-if="item.item.version"><VIcon :small="true" name="translate"/> {{ item.item.version }}</span>
               <!--<span class="pills"><VIcon :small="true" name="event"/> {{ 2 }}</span>-->
             </div>
           </div>
@@ -144,6 +157,9 @@ onMounted(() => {
 .place-items {
   display: flex;
   flex-flow: column;
+  flex: 1 1 auto;
+  height: 0;
+  overflow-y: auto;
   //gap: 0.3rem;
 }
 
@@ -228,6 +244,7 @@ onMounted(() => {
 
 .eitem__info {
   display: flex;
+  flex-flow: row wrap;
   gap: 0.3rem;
 }
 

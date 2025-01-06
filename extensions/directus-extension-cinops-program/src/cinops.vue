@@ -147,7 +147,6 @@ function setEvents(info, successCallback, failureCallback) {
                     res.data.data
                 )
                 .map(function (eventEl) {
-                  console.log(eventEl)
                   const color = findSessionColor(eventEl)
                   return {
                     display: "block",
@@ -423,6 +422,8 @@ function sessionRefetch() {
   margin: 0 1rem;
   width: 15rem;
   min-width: 15rem;
+  display: flex;
+  flex-flow: column;
 }
 
 .prog__right {
@@ -463,7 +464,7 @@ function sessionRefetch() {
   background-color: rgba(255, 255, 255, 1);
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
 }
 
 .fc-v-event {
@@ -474,7 +475,7 @@ function sessionRefetch() {
   background-color: rgba(255, 255, 255, 1);
   position: absolute;
   bottom: -1rem;
-  right: 0;
+  left: 0;
   border-radius: 0.4rem;
   font-size: 0.7rem;
   padding: 0.2rem;

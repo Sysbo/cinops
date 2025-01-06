@@ -18,7 +18,7 @@ watch(search, () => {
 })
 
 function getLastMovies() {
-  api.get("/items/movies?fields[]=id,title,places.places_id&limit=30&sort[]=-date_created"
+  api.get("/items/movies?fields[]=id,title,version,places.places_id&limit=30&sort[]=-date_created"
   ).then((res) => {
     movies.value = res.data.data
   });
@@ -50,7 +50,7 @@ function addItemToPlace(item, type) {
 }
 
 function searchFor(search) {
-  api.get("/items/movies?filter[title][_contains]=" + search.value + "&filter[title][_nempty]&fields[]=id,title,places.places_id"
+  api.get("/items/movies?filter[title][_contains]=" + search.value + "&filter[title][_nempty]&fields[]=id,title,version,places.places_id"
   ).then((res) => {
     searchMovies.value = res.data.data
   });
@@ -77,18 +77,20 @@ getLastEvents()
     <div class="search__results" v-if="search">
       <div class="search__results__movies">
         <h3>Films</h3>
-        <div v-for="movie in searchMovies">
-          <VButton
-              @click="addItemToPlace(movie, 'movies')"
-              :rounded="true"
-              :icon="true"
-              :small="true"
-              :disabled="isItemDisable(movie)"
-          >
-            <VIcon :name="isItemDisable(movie) ? 'check' : 'add'" :small="true"/>
-          </VButton>
-          {{ movie.title }}
-        </div>
+        <template v-for="movie in searchMovies">
+          <div>
+            <VButton
+                @click="addItemToPlace(movie, 'movies')"
+                :rounded="true"
+                :icon="true"
+                :small="true"
+                :disabled="isItemDisable(movie)"
+            >
+              <VIcon :name="isItemDisable(movie) ? 'check' : 'add'" :small="true"/>
+            </VButton>
+            {{ movie.title }} <span v-if="movie.version"> - {{ movie.version }}</span>
+          </div>
+        </template>
         <div v-if="searchMovies.length === 0">Aucun film trouvé</div>
       </div>
       <div class="search__results__events">
@@ -132,7 +134,7 @@ getLastEvents()
           >
             <VIcon :name="isItemDisable(movie) ? 'check' : 'add'" :small="true"/>
           </VButton>
-          {{ movie.title }}
+          {{ movie.title }} <span v-if="movie.version"> - {{ movie.version }}</span>
         </div>
       </VTabItem>
       <VTabItem>
