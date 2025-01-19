@@ -6,6 +6,7 @@ export const useCinopsStore = defineStore('cinops', () => {
     const api = useApi()
     const selectedPlace = ref(0)
     const place = ref(null);
+    const cinemappAccessToken = ref(null)
 
     /*function getMovies() {
         api.get("/items/movies?filter[places][places_id][_eq]=" +
@@ -20,6 +21,12 @@ export const useCinopsStore = defineStore('cinops', () => {
             events.value = res.data.data
         });
     }*/
+
+        function getCinemappAccessToken() { 
+            api.get("/items/cinemapp/?fields[]=cinemapp_access_token").then((res) => {
+                cinemappAccessToken.value = res.data.data.cinemapp_access_token
+            })
+        }
 
     function setUserSelectedPlace() {
         api.patch("/users/me", {
@@ -45,6 +52,7 @@ export const useCinopsStore = defineStore('cinops', () => {
         //setUserSelectedPlace()
     })
     setDefaultPlaceId()
+    getCinemappAccessToken()
 
-    return {selectedPlace, place, getPlace}
+    return {selectedPlace, place, cinemappAccessToken, getPlace}
 })

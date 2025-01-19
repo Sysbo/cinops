@@ -15,6 +15,7 @@ import {storeToRefs} from 'pinia'
 import isDarkColor from 'is-dark-color'
 import Navigation from './components/Navigation.vue'
 import ImportMaccsbox from "./components/ImportMaccsbox.vue";
+import Cinemapp from "./components/Cinemapp.vue";
 
 const cinopsStore = useCinopsStore()
 const {place} = storeToRefs(cinopsStore)
@@ -23,6 +24,7 @@ const api = useApi()
 const livePreviewMode = ref(false)
 const addMovie = ref(false)
 const importMovies = ref(false)
+const importCinemapp = ref(false)
 const sessionId = ref(null)
 const sessionDrawerActive = ref(false)
 const fullcalendar = ref(null)
@@ -244,10 +246,17 @@ function sessionRefetch() {
           Programmation du cinéma : {{ place.name }}
         </div>
       </sidebar-detail>
-      <sidebar-detail icon="upload" title="Import Maccsbox" open>
+     <!--<sidebar-detail icon="upload" title="Import Maccsbox" open>
         <div class="page-description">
           <VButton @click="importMovies=true" small>
             Importer films Maccsbox
+          </VButton>
+        </div>
+      </sidebar-detail>-->
+      <sidebar-detail icon="upload" title="Import Cinemapp" open>
+        <div class="page-description">
+          <VButton @click="importCinemapp=true" small>
+            Import Cinemapp
           </VButton>
         </div>
       </sidebar-detail>
@@ -258,9 +267,14 @@ function sessionRefetch() {
       <AddItemsToPlace/>
     </v-drawer>
 
-    <v-drawer @cancel="importMovies=false" :modelValue="importMovies" :persistent="true"
+    <!--<v-drawer @cancel="importMovies=false" :modelValue="importMovies" :persistent="true"
               :title="'Importer des films Maccsbox'">
       <ImportMaccsbox/>
+    </v-drawer>-->
+
+    <v-drawer @cancel="importCinemapp=false" :modelValue="importCinemapp" :persistent="true"
+              :title="'Importer Cinemapp'">
+      <Cinemapp/>
     </v-drawer>
 
     <drawer-item v-if="sessionId" @input="sessionUpdate" @update:active="sessionDrawerActive=false"

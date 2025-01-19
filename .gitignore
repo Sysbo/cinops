@@ -4,6 +4,8 @@
 .env
 uploads
 data
+mysql
+dbbackup
 
 
 

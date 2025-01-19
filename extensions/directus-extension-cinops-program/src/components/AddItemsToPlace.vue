@@ -1,7 +1,7 @@
 <script setup>
 import {ref, watch} from 'vue'
 import {useApi} from '@directus/extensions-sdk'
-import {useCinopsStore} from '../stores/cinops';
+import {useCinopsStore} from '../stores/cinops'
 import uniqolor from 'uniqolor';
 
 const cinopsStore = useCinopsStore()
@@ -61,8 +61,8 @@ function searchFor(search) {
   });
 }
 
-function isItemDisable(item) {
-  return cinopsStore.place.items.find((e) => e.item.id === item.id)
+function isItemDisable(item, collection) {
+  return cinopsStore.place.items.find((e) => (e.item.id === item.id && e.collection == collection))
 }
 
 
@@ -73,7 +73,7 @@ getLastEvents()
 
 <template>
   <div class="search">
-    <v-input v-model="search" placehodler="Rechercher un film ou un événement"/>
+    <v-input v-model="search" placeholder="Rechercher un film ou un événement"/>
     <div class="search__results" v-if="search">
       <div class="search__results__movies">
         <h3>Films</h3>
@@ -84,9 +84,9 @@ getLastEvents()
                 :rounded="true"
                 :icon="true"
                 :small="true"
-                :disabled="isItemDisable(movie)"
+                :disabled="isItemDisable(movie, 'movies')"
             >
-              <VIcon :name="isItemDisable(movie) ? 'check' : 'add'" :small="true"/>
+              <VIcon :name="isItemDisable(movie, 'movies') ? 'check' : 'add'" :small="true"/>
             </VButton>
             {{ movie.title }} <span v-if="movie.version"> - {{ movie.version }}</span>
           </div>
@@ -101,9 +101,9 @@ getLastEvents()
               :rounded="true"
               :icon="true"
               :small="true"
-              :disabled="isItemDisable(event)"
+              :disabled="isItemDisable(event, 'events')"
           >
-            <VIcon :name="isItemDisable(event) ? 'check' : 'add'" :small="true"/>
+            <VIcon :name="isItemDisable(event, 'events') ? 'check' : 'add'" :small="true"/>
           </VButton>
           {{ event.title }}
         </div>
@@ -130,9 +130,9 @@ getLastEvents()
               :rounded="true"
               :icon="true"
               :small="true"
-              :disabled="isItemDisable(movie)"
+              :disabled="isItemDisable(movie, 'movies')"
           >
-            <VIcon :name="isItemDisable(movie) ? 'check' : 'add'" :small="true"/>
+            <VIcon :name="isItemDisable(movie, 'movies') ? 'check' : 'add'" :small="true"/>
           </VButton>
           {{ movie.title }} <span v-if="movie.version"> - {{ movie.version }}</span>
         </div>
@@ -144,9 +144,9 @@ getLastEvents()
               :rounded="true"
               :icon="true"
               :small="true"
-              :disabled="isItemDisable(event)"
+              :disabled="isItemDisable(event, 'events')"
           >
-            <VIcon :name="isItemDisable(event) ? 'check' : 'add'" :small="true"/>
+            <VIcon :name="isItemDisable(event, 'events') ? 'check' : 'add'" :small="true"/>
           </VButton>
           {{ event.title }}
         </div>
